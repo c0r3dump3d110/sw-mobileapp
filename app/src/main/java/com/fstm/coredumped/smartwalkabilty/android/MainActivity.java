@@ -1,4 +1,4 @@
-package com.fstm.coredumped.android;
+package com.fstm.coredumped.smartwalkabilty.android;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -9,7 +9,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
+
+import com.fstm.coredumped.android.R;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;

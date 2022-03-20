@@ -1,6 +1,5 @@
-package com.fstm.coredumped.android;
+package com.fstm.coredumped.smartwalkabilty.android;
 
-import android.content.Context;
 import android.view.MotionEvent;
 
 import org.osmdroid.util.GeoPoint;
@@ -27,7 +26,8 @@ public class MyTouchOverlay extends Overlay
         if(depart!=null&&Arrive!=null)BeginRouting();
         return true;
     }
-    private void BeginRouting(){
+    private void BeginRouting()
+    {
         System.out.println("Depart  Longitude: "+depart.getLongitude()+" latitude : "+depart.getLatitude());
         System.out.println("Arriver  Longitude: "+Arrive.getLongitude()+" latitude : "+Arrive.getLatitude());
     }
