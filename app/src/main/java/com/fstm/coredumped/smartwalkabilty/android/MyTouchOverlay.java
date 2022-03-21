@@ -2,6 +2,8 @@ package com.fstm.coredumped.smartwalkabilty.android;
 
 import android.view.MotionEvent;
 
+import com.fstm.coredumped.smartwalkabilty.routing.model.bo.Chemin;
+
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
@@ -9,26 +11,34 @@ import org.osmdroid.views.overlay.Overlay;
 
 public class MyTouchOverlay extends Overlay
 {
-    GeoPoint depart;
-    GeoPoint Arrive;
+    com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint depart;
+    com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint Arrive;
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e, MapView mapView) {
         Projection proj = mapView.getProjection();
         GeoPoint loc = (GeoPoint) proj.fromPixels((int)e.getX(), (int)e.getY());
-        String longitude = Double.toString(((double)loc.getLongitude()));
-        String latitude = Double.toString(((double)loc.getLatitude()));
-        if(depart==null)depart=loc;
-        else if(Arrive==null)Arrive=loc;
+        double longitude = loc.getLongitude();
+        double latitude = loc.getLatitude();
+        com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint geoPoint=new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(latitude,longitude);
+        if(depart==null){
+            depart=geoPoint;
+        }
+        else if(Arrive==null)Arrive=geoPoint;
         else {
             Arrive=null;
-            depart=loc;
+            depart=geoPoint;
         }
-        if(depart!=null&&Arrive!=null)BeginRouting();
+        if(Arrive!=null)BeginRouting();
         return true;
     }
     private void BeginRouting()
     {
-        System.out.println("Depart  Longitude: "+depart.getLongitude()+" latitude : "+depart.getLatitude());
-        System.out.println("Arriver  Longitude: "+Arrive.getLongitude()+" latitude : "+Arrive.getLatitude());
+        System.out.println("Depart  Longitude: "+depart.getLongtitude()+" latitude : "+depart.getLaltittude());
+        System.out.println("Arriver  Longitude: "+Arrive.getLongtitude()+" latitude : "+Arrive.getLaltittude());
+        new ClientSocket().SendRoutingReq(depart,Arrive);
+    }
+    private void VisualiseChemin(Chemin chemin)
+    {
+
     }
 }
