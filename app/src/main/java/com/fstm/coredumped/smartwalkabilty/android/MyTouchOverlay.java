@@ -35,9 +35,9 @@ public class MyTouchOverlay extends Overlay
     {
         System.out.println("Depart  Longitude: "+depart.getLongtitude()+" latitude : "+depart.getLaltittude());
         System.out.println("Arriver  Longitude: "+Arrive.getLongtitude()+" latitude : "+Arrive.getLaltittude());
-        new ClientSocket().SendRoutingReq(depart,Arrive);
+        new ClientSocket().SendRoutingReq(this,depart,Arrive);
     }
-    private void VisualiseChemin(Chemin chemin)
+    public void VisualiseChemin(Chemin chemin)
     {
 
     }

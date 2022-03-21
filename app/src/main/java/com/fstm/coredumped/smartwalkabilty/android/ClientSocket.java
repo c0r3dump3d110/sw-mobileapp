@@ -9,6 +9,7 @@ import com.fstm.coredumped.smartwalkabilty.routing.model.bo.Chemin;
 import org.osmdroid.views.overlay.Overlay;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -21,8 +22,9 @@ public class ClientSocket
     Overlay overlay;
     public static String server="192.168.1.100";
     public static int port=1337;
-    public void SendRoutingReq(GeoPoint depart,GeoPoint arrive)
+    public void SendRoutingReq(MyTouchOverlay overlay ,GeoPoint depart,GeoPoint arrive)
     {
+        this.overlay=overlay;
         ShortestPathReq shortestPathReq=new ShortestPathReq(15,depart,arrive);
         new Routing().doInBackground(shortestPathReq);
     }
@@ -33,9 +35,6 @@ public class ClientSocket
             InetAddress address=InetAddress.getByAddress(server.getBytes(StandardCharsets.UTF_8));
             Socket socket= new Socket(address,port);
             return socket;
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -49,14 +48,22 @@ public class ClientSocket
             try {
                 Socket socket=ConnectToServer();
                 ObjectOutputStream outputStream=new ObjectOutputStream(socket.getOutputStream());
-
-                return null;
+                ObjectInputStream objectInputStream=new ObjectInputStream(socket.getInputStream());
+                outputStream.writeObject(shortestPathReqs[0]);
+                outputStream.flush();
+                return (List<Chemin>) objectInputStream.readObject();
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }catch (Exception e){
                 return null;
             }
+        }
+
+        @Override
+        protected void onPostExecute(List<Chemin> chemins) {
+            MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
+            touchOverlay.
         }
     }
 
