@@ -63,7 +63,10 @@ public class ClientSocket
         @Override
         protected void onPostExecute(List<Chemin> chemins) {
             MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
-            touchOverlay.
+            for (Chemin c :
+                    chemins) {
+                touchOverlay.VisualiseChemin(c);
+            }
         }
     }
 
