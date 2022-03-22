@@ -6,6 +6,5 @@ public interface IDAO<T>
 {
     boolean Create(T obj);
     Collection<T> Retrieve();
-    void update(T obj);
     boolean delete(T obj);
 }

@@ -1,25 +1,76 @@
 package com.fstm.coredumped.smartwalkabilty.web.Model.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-public class Connexion {
-    private  static  Connection conn=null;
-    public static Connection getCon(){
-        if(conn==null)conn=createConn();
+public class Connexion extends SQLiteOpenHelper
+{
+    private static final int DATABASE_VERSION = 1;
+    private static final String databaseName = "SMARTWALK_DB";
+    private static  Connexion conn=null;
+    public static Connexion getCon()
+    {
         return conn;
     }
-    private static Connection createConn(){
-        try {
-            Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/DB_SMARTWALK","hp","123");
-        }catch (ClassNotFoundException e){
-            System.err.println(e);
-            return  null;
-        }catch (SQLException e){
-            System.err.println(e);
-            return  null;
-        }
+    public static void ConstructDb(Context context)
+    {
+        conn=new Connexion(context);
     }
+    Connexion(Context context) {
+        super(context,databaseName , null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase)
+    {
+        String DATABASE_TABLE_Announce_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s DATE,%s DATE,%s TEXT,%s TEXT,%s TEXT,%s INTEGER,%s DATETIME);", AnnounceTable.TableName, AnnounceTable.id, AnnounceTable.dateD, AnnounceTable.dateF, AnnounceTable.titre, AnnounceTable.description, AnnounceTable.urlPrincipalImage, AnnounceTable.categorie, AnnounceTable.DateInserted);
+        String DATABASE_TABLE_Site_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s REAL,%s REAL,%s TEXT,%s DATE);",SiteTable.TableName,SiteTable.id,SiteTable.Name,SiteTable.localisationX,SiteTable.localisationY,SiteTable.Organisation,SiteTable.DateInserted);
+        String DATABASE_TABLE_Images_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s INTEGER);",ImagesTable.TableName,ImagesTable.id,ImagesTable.lien,ImagesTable.Announce);
+        String DATABASE_TABLE_AS_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s INTEGER PRIMARY KEY);",A_S_Table.TableName,A_S_Table.Announce,A_S_Table.Site);
+        sqLiteDatabase.execSQL(DATABASE_TABLE_Announce_CREATE);
+        sqLiteDatabase.execSQL(DATABASE_TABLE_Site_CREATE);
+        sqLiteDatabase.execSQL(DATABASE_TABLE_Images_CREATE);
+        sqLiteDatabase.execSQL(DATABASE_TABLE_AS_CREATE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
+    { }
+}
+interface AnnounceTable
+{
+    String TableName="announces";
+    String id="id";
+    String dateD="dateDebut";
+    String dateF="dateFin";
+    String titre="titre";
+    String description="description";
+    String urlPrincipalImage="urlPrincipalImage";
+    String categorie="id_cat";
+    String DateInserted="dateinser";
+}
+interface SiteTable
+{
+    String TableName="sites";
+    String id="id";
+    String Name="name";
+    String Organisation="organisation";
+    String localisationX="Longitude";
+    String localisationY="Latitude";
+    String DateInserted="dateinser";
+}
+interface ImagesTable
+{
+    String TableName="images";
+    String id="id";
+    String lien="link";
+    String Announce="id_announce";
+}
+
+interface A_S_Table
+{
+    String TableName="announces_con_site";
+    String Announce="id_announce";
+    String Site="id_site";
 }

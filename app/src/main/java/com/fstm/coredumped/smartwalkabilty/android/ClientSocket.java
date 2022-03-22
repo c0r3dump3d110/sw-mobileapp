@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.routing.model.bo.Chemin;
+import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
+import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOAnnonce;
 
 import org.osmdroid.views.overlay.Overlay;
 
@@ -28,11 +30,9 @@ public class ClientSocket
         ShortestPathReq shortestPathReq=new ShortestPathReq(15,depart,arrive);
         new Routing().doInBackground(shortestPathReq);
     }
-
-
     public Socket ConnectToServer(){
         try {
-            InetAddress address=InetAddress.getByAddress(server.getBytes(StandardCharsets.UTF_8));
+            InetAddress address=InetAddress.getByName(server);
             Socket socket= new Socket(address,port);
             return socket;
         } catch (IOException e) {
@@ -40,8 +40,6 @@ public class ClientSocket
             return null;
         }
     }
-
-
     class Routing extends AsyncTask<ShortestPathReq,Void, List<Chemin>>{
         @Override
         protected List<Chemin> doInBackground(ShortestPathReq... shortestPathReqs) {
@@ -62,13 +60,18 @@ public class ClientSocket
 
         @Override
         protected void onPostExecute(List<Chemin> chemins) {
-            MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
-            for (Chemin c :
-                    chemins) {
-                touchOverlay.VisualiseChemin(c);
+           RoutingProcess(chemins);
+        }
+    }
+    private void RoutingProcess(List<Chemin> chemins)
+    {
+        MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
+        for (Chemin c : chemins) {
+            touchOverlay.VisualiseChemin(c);
+            for (Annonce a: c.getAnnonces()) {
+                DAOAnnonce.getDAOAnnonce().Create(a);
             }
         }
     }
-
 
 }

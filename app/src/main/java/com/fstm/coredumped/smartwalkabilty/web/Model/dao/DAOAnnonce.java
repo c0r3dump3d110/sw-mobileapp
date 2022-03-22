@@ -1,10 +1,18 @@
 package com.fstm.coredumped.smartwalkabilty.web.Model.dao;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Image;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
+import static com.fstm.coredumped.smartwalkabilty.web.Model.dao.AnnounceTable.*;
+import static com.fstm.coredumped.smartwalkabilty.web.Model.dao.SiteTable.TableName;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,13 +28,13 @@ public class DAOAnnonce implements IDAO<Annonce>{
     @Override
     public boolean Create(Annonce obj)
     {
+        if(checkExiste(obj.getId()))return false;
+        SQLiteDatabase connexion= Connexion.getCon().getWritableDatabase();
         try {
-            Connexion.getCon().setAutoCommit(false);
-            PreparedStatement preparedStatement= Connexion.getCon().prepareStatement("INSERT INTO Annonces (datedebut,datefin,titre,urlimageprincipale,description) VALUES (?,?,?,?,?) ", Statement.RETURN_GENERATED_KEYS);
-            fillStatement(obj, preparedStatement);
-            preparedStatement.executeUpdate();
-            ResultSet set= preparedStatement.getGeneratedKeys();
-            if(set.next()) obj.setId(set.getInt(1));
+            connexion.beginTransaction();
+            ContentValues contentValues=new ContentValues();
+            fillStatement(obj, contentValues);
+            connexion.insertOrThrow(TableName,null,contentValues);
             for (Image img: obj.getSubImgs()) {
                 DAOImage.getDAOImage().Create(img);
             }
@@ -34,17 +42,11 @@ public class DAOAnnonce implements IDAO<Annonce>{
             {
                 Create_Relation_Ann_Site(obj,site);
             }
-            Connexion.getCon().commit();
-            Connexion.getCon().setAutoCommit(true);
+            connexion.setTransactionSuccessful();
+            connexion.endTransaction();
             return true;
-        }catch (SQLException e){
-            try {
-                Connexion.getCon().rollback();
-            } catch (SQLException ex) {
-                System.err.println(ex);
-                return  false;
-
-            }
+        }catch (Exception e){
+            connexion.endTransaction();
             System.err.println(e);
             return false;
         }
@@ -56,173 +58,84 @@ public class DAOAnnonce implements IDAO<Annonce>{
     {
         return null;
     }
-    public Collection<Annonce> RetrieveOrganisationAnnonces(int id_org)
-    {
-        List<Annonce> annonces=new LinkedList<Annonce>();
-        try {
-            PreparedStatement sql=Connexion.getCon().prepareStatement("SELECT A.* From annonces A JOIN annonces_Con_Site aCS on A.id = aCS.id_annonce JOIN site S  on aCS.id_site=S.id where id_organisation=?");
-            sql.setInt(1,id_org);
-            ResultSet set= sql.executeQuery();
-            while (set.next()) annonces.add(extractAnnonce(set));
-        } catch (SQLException e) {
-            System.err.println(e);
-        }
-        return annonces;
-    }
-    public Annonce findById(int id){
-        try {
-            Annonce annonce=null;
-            PreparedStatement sql=Connexion.getCon().prepareStatement("SELECT * From annonces where id=?");
-            sql.setInt(1,id);
-            ResultSet set= sql.executeQuery();
-            if(set.next())
-            {
-                annonce=extractAnnonce(set);
-                DAOImage.getDAOImage().findImagesByAnnonce(annonce);
-                DAOSite.getDaoSite().extractAnnonceSites(annonce);
-            }
-            return annonce;
-        } catch (SQLException e) {
-            System.err.println(e);
-            return null;
-        }
-    }
-    private Annonce extractAnnonce(ResultSet set) throws SQLException {
-        Annonce annonce=new Annonce();
-        annonce.setId(set.getInt("id"));
-        annonce.setDescription(set.getString("description"));
-        annonce.setUrlPrincipalImage(set.getString("urlimageprincipale"));
-        annonce.setTitre(set.getString("titre"));
-        annonce.setDateDebut(set.getDate("datedebut"));
-        annonce.setDateFin(set.getDate("datefin"));
-        return annonce;
-    }
 
-    @Override
-    public void update(Annonce obj)
-    {
-        try {
-            Connexion.getCon().setAutoCommit(false);
-            PreparedStatement preparedStatement= Connexion.getCon().prepareStatement("UPDATE  annonces SET datedebut=?,datefin=?,titre=?,urlimageprincipale=?,description=? where id=?");
-            fillStatement(obj, preparedStatement);
-            preparedStatement.setInt(6,obj.getId());
-            preparedStatement.executeUpdate();
-            DAOImage.getDAOImage().clearImages(obj);
-            for (Image img: obj.getSubImgs())
-            {
-                DAOImage.getDAOImage().Create(img);
-            }
-            Clear_Relation_Ann_Site(obj);
-            for (Site site :obj.getSites())
-            {
 
-                Create_Relation_Ann_Site(obj,site);
-            }
-            Connexion.getCon().commit();
-            Connexion.getCon().setAutoCommit(true);
-        }catch (SQLException e){
-            try {
-                Connexion.getCon().rollback();
-            } catch (SQLException ex) {
-                System.err.println(ex);
-            }
-            System.err.println(e);
-        }
-
-    }
-
-    private void fillStatement(Annonce obj, PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setDate(1, new Date(obj.getDateDebut().getTime()));
-        preparedStatement.setDate(2, new Date(obj.getDateFin().getTime()));
-        preparedStatement.setString(3,obj.getTitre());
-        preparedStatement.setString(4,obj.getUrlPrincipalImage());
-        preparedStatement.setString(5,obj.getDescription());
+    private void fillStatement(Annonce obj, ContentValues preparedStatement)  {
+        preparedStatement.put(dateD, obj.getDateDebut().toString());
+        preparedStatement.put(dateF, obj.getDateFin().toString());
+        preparedStatement.put(titre,obj.getTitre());
+        preparedStatement.put(urlPrincipalImage,obj.getUrlPrincipalImage());
+        preparedStatement.put(description,obj.getDescription());
     }
 
     @Override
     public boolean delete(Annonce obj)
     {
-        try {
-            Connexion.getCon().setAutoCommit(false);
-            PreparedStatement sql=Connexion.getCon().prepareStatement("DELETE FROM annonces where id=?");
-            sql.setInt(1,obj.getId());
-            sql.executeUpdate();
-            Connexion.getCon().commit();
-            Connexion.getCon().setAutoCommit(true);
-            return true;
-        } catch (Exception e) {
-            try {
-                Connexion.getCon().rollback();
-            } catch (SQLException ex) {
-                System.err.println(ex);
-                return  false;
-            }
-            System.err.println(e);
-            return false;
-        }
-    }
-    public boolean deleteMultiple(Collection<Annonce> annonces)
-    {
-        try {
-            Connexion.getCon().setAutoCommit(false);
-            for (Annonce annonce: annonces) {
-                PreparedStatement sql=Connexion.getCon().prepareStatement("DELETE FROM annonces where id=?");
-                sql.setInt(1,annonce.getId());
-                sql.executeUpdate();
-            }
-            Connexion.getCon().commit();
-            Connexion.getCon().setAutoCommit(true);
-            return true;
-        } catch (Exception e) {
-            try {
-                Connexion.getCon().rollback();
-            } catch (SQLException ex) {
-                System.err.println(ex);
-                return  false;
-            }
-            System.err.println(e);
-            return false;
-        }
+       return false;
     }
     public boolean Create_Relation_Ann_Site(Annonce annonce,Site site)
     {
+        DAOSite.getDaoSite().Create(site);
+        SQLiteDatabase database=Connexion.getCon().getWritableDatabase();
+        database.beginTransaction();
         try {
-            PreparedStatement statement=Connexion.getCon().prepareStatement("INSERT INTO annonces_con_site VALUES (?,?)");
-            statement.setInt(1,annonce.getId());
-            statement.setInt(2,site.getId());
-            statement.executeUpdate();
+            ContentValues values=new ContentValues();
+            values.put(A_S_Table.Announce,annonce.getId());
+            values.put(A_S_Table.Site,site.getId());
+            database.insertOrThrow(A_S_Table.TableName,null,values);
+            database.setTransactionSuccessful();
+            database.endTransaction();
             return true;
-        }catch (SQLException sqlException){
-            System.err.println(sqlException);
+        }catch (Throwable exception){
+            database.endTransaction();
+            System.err.println(exception);
             return false;
         }
     }
-    private void Clear_Relation_Ann_Site(Annonce annonce) throws SQLException {
-
-        PreparedStatement statement=Connexion.getCon().prepareStatement("Delete FROM annonces_con_site where id_annonce=?");
-        statement.setInt(1,annonce.getId());
-        statement.executeUpdate();
+    private Annonce extractAnnonce(Cursor set) throws SQLException {
+        Annonce annonce=new Annonce();
+        annonce.setId(set.getInt(1));
+        annonce.setDescription(set.getString(2));
+        annonce.setUrlPrincipalImage(set.getString(3));
+        annonce.setTitre(set.getString(4));
+        String dated=set.getString(5);
+        String datef=set.getString(6);
+        SimpleDateFormat dateFormat=new SimpleDateFormat("dow mon dd hh:mm:ss zzz yyyy");
+        try {
+            annonce.setDateDebut(dateFormat.parse(dated));
+            annonce.setDateFin(dateFormat.parse(datef));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        DAOImage.getDAOImage().findImagesByAnnonce(annonce);
+        return annonce;
     }
-    public void extractSiteAnnonces(Site site) throws SQLException
+    public void extractSiteAnnonces(Site site)
     {
-        PreparedStatement statement=Connexion.getCon().prepareStatement("SELECT a.* FROM  annonces a JOIN annonces_con_site acs on a.id = acs.id_annonce  where id_site=?");
-        statement.setInt(1,site.getId());
-        ResultSet set=statement.executeQuery();
-        while (set.next()){
-            site.AddAnnonce(extractAnnonce(set));
+        SQLiteDatabase database=Connexion.getCon().getWritableDatabase();
+        database.beginTransaction();
+        try {
+            Cursor set =database.rawQuery("SELECT a.* FROM "+TableName+" a JOIN "+A_S_Table.TableName+" acs on a."+id+" = acs."+A_S_Table.Announce+"  where id_site=?",new String[]{String.valueOf(site.getId())}) ;
+            while (set.moveToNext()){
+                site.AddAnnonce(extractAnnonce(set));
+            }
+            database.setTransactionSuccessful();
+            database.endTransaction();
+        }catch (Exception e){
+            database.endTransaction();
+            System.err.println(e);
         }
     }
     public boolean checkExiste(int id) {
         try {
-            PreparedStatement sql= null;
-            sql = Connexion.getCon().prepareStatement("SELECT * From annonces where id=?");
-            sql.setInt(1,id);
-            ResultSet set= sql.executeQuery();
-            if(set.next())return true;
-        } catch (SQLException e) {
+            SQLiteDatabase database=Connexion.getCon().getReadableDatabase();
+            Cursor set=database.query(TableName,new String[]{SiteTable.id},SiteTable.id+"=?",new String[]{String.valueOf(id)},null,null,null);
+            if(set.moveToNext())return true;
+            return false;
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        return false;
+
     }
 }

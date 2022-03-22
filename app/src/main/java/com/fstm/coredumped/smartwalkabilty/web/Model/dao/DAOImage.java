@@ -2,6 +2,11 @@ package com.fstm.coredumped.smartwalkabilty.web.Model.dao;
 
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Image;
+import static com.fstm.coredumped.smartwalkabilty.web.Model.dao.ImagesTable.*;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,62 +23,57 @@ public class DAOImage implements IDAO<Image>{
         return daoImage;
     }
     private DAOImage(){
-
     }
     @Override
     public boolean Create(Image obj) {
-        try {
-            PreparedStatement preparedStatement= Connexion.getCon().prepareStatement("INSERT INTO Images (urlimage,id_Annonce) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, obj.getUrlImage());
-            preparedStatement.setInt(2, obj.getAnnonce().getId());
-            preparedStatement.executeUpdate();
-            ResultSet set= preparedStatement.getGeneratedKeys();
-            set.next();
-            obj.setId(set.getInt(1));
+        SQLiteDatabase database=Connexion.getCon().getReadableDatabase();
+        database.beginTransaction();
+        try
+        {
+            ContentValues contentValues=new ContentValues();
+            contentValues.put(id,obj.getId());
+            contentValues.put(Announce,obj.getAnnonce().getId());
+            contentValues.put(lien,obj.getUrlImage());
+            database.insertOrThrow(TableName,null,contentValues);
+            database.setTransactionSuccessful();
+            database.endTransaction();
             return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println(e);
+            database.endTransaction();
             return  false;
         }
     }
-
     @Override
     public Collection<Image> Retrieve() {
         return null;
     }
-
-    @Override
-    public void update(Image obj) {
-
-    }
-
     @Override
     public boolean delete(Image obj) {
         return false;
     }
-    public List<Image> findImagesByAnnonce(Annonce annonce) throws SQLException {
-        List<Image> images=new ArrayList<Image>();
-        PreparedStatement preparedStatement= Connexion.getCon().prepareStatement("SELECT * from Images where id_annonce=?");
-        preparedStatement.setInt(1, annonce.getId());
-        ResultSet set= preparedStatement.executeQuery();
-        while (set.next()){
-             Image img= extractImage(set);
-             img.setAnnonce(annonce);
-             annonce.AddImage(img);
-             images.add(img);
+    public void findImagesByAnnonce(Annonce annonce) throws SQLException {
+        SQLiteDatabase database=Connexion.getCon().getReadableDatabase();
+        database.beginTransaction();
+        try {
+            Cursor set= database.query(TableName,new String[]{id,lien},Announce+"=?",new String[]{String.valueOf(annonce.getId())},null,null,null);
+            while (set.moveToNext()){
+                Image img= extractImage(set);
+                img.setAnnonce(annonce);
+                annonce.AddImage(img);
+            }
+            database.setTransactionSuccessful();
+            database.endTransaction();
+        }catch (Exception e){
+            System.err.println(e);
+            database.endTransaction();
         }
-        return images;
     }
-    private Image extractImage(ResultSet set) throws SQLException {
+    private Image extractImage(Cursor set) throws SQLException {
         Image image=new Image();
-        image.setUrlImage(set.getString("urlimage"));
-        image.setId(set.getInt("id"));
+        image.setUrlImage(set.getString(2));
+        image.setId(set.getInt(1));
         return image;
     }
-    public void clearImages(Annonce annonce) throws SQLException
-    {
-        PreparedStatement preparedStatement= Connexion.getCon().prepareStatement("DELETE from Images where id_annonce=?");
-        preparedStatement.setInt(1, annonce.getId());
-        preparedStatement.executeUpdate();
-    }
+
 }
