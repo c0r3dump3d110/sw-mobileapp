@@ -6,6 +6,7 @@ import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
+import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOAnnonce;
 
 import org.osmdroid.views.overlay.Overlay;
@@ -65,6 +66,7 @@ public class ClientSocket
     }
     private void RoutingProcess(List<Chemin> chemins)
     {
+        Connexion.getCon().ClearDB();
         MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
         for (Chemin c : chemins) {
             touchOverlay.VisualiseChemin(c);
