@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
         map.setMultiTouchControls(true);
-        map.getOverlayManager().add(new MyTouchOverlay());
+        map.getOverlayManager().add(new MyTouchOverlay(getApplicationContext()));
         IMapController mapController = map.getController();
         mapController.setZoom(9.5);
         GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
