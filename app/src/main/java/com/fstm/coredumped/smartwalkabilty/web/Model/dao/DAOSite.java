@@ -39,7 +39,7 @@ public class DAOSite implements IDAO<Site>{
             contentValues.put(Organisation,obj.getOrganisation().getNom());
             contentValues.put(localisationY,obj.getLocalisation().getLaltittude());
             contentValues.put(localisationX,obj.getLocalisation().getLongtitude());
-            contentValues.put(DateInserted,new Date().toString());
+            contentValues.put(dateInserted,new Date().toString());
             db.beginTransaction();
             db.insertOrThrow(TableName,null,contentValues);
             db.setTransactionSuccessful();

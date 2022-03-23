@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.fstm.coredumped.android.R;
+import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -36,10 +37,11 @@ public class MainActivity extends AppCompatActivity {
 
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
+        Connexion.ConstructDb(getApplicationContext());
         map.setMultiTouchControls(true);
         map.getOverlayManager().add(new MyTouchOverlay(getApplicationContext()));
         IMapController mapController = map.getController();
-        mapController.setZoom(9.5);
+        mapController.setZoom(15.8);
         GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
         mapController.setCenter(startPoint);
     }

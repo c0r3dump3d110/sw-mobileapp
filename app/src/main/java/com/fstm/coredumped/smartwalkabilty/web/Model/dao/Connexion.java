@@ -24,8 +24,8 @@ public class Connexion extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        String DATABASE_TABLE_Announce_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s TEXT,%s TEXT,%s TEXT,%s TEXT,%s INTEGER,%s TEXTTIME);", AnnounceTable.TableName, AnnounceTable.id, AnnounceTable.TEXTD, AnnounceTable.TEXTF, AnnounceTable.titre, AnnounceTable.description, AnnounceTable.urlPrincipalImage, AnnounceTable.categorie, AnnounceTable.TEXTInserted);
-        String DATABASE_TABLE_Site_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s REAL,%s REAL,%s TEXT,%s TEXT);",SiteTable.TableName,SiteTable.id,SiteTable.Name,SiteTable.localisationX,SiteTable.localisationY,SiteTable.Organisation,SiteTable.TEXTInserted);
+        String DATABASE_TABLE_Announce_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s TEXT,%s TEXT,%s TEXT,%s TEXT,%s INTEGER,%s TEXTTIME);", AnnounceTable.TableName, AnnounceTable.id, AnnounceTable.dateD, AnnounceTable.dateF, AnnounceTable.titre, AnnounceTable.description, AnnounceTable.urlPrincipalImage, AnnounceTable.categorie, AnnounceTable.dateInserted);
+        String DATABASE_TABLE_Site_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s REAL,%s REAL,%s TEXT,%s TEXT);",SiteTable.TableName,SiteTable.id,SiteTable.Name,SiteTable.localisationX,SiteTable.localisationY,SiteTable.Organisation,SiteTable.dateInserted);
         String DATABASE_TABLE_Images_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s INTEGER);",ImagesTable.TableName,ImagesTable.id,ImagesTable.lien,ImagesTable.Announce);
         String DATABASE_TABLE_AS_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s INTEGER PRIMARY KEY);",A_S_Table.TableName,A_S_Table.Announce,A_S_Table.Site);
         sqLiteDatabase.execSQL(DATABASE_TABLE_Announce_CREATE);
@@ -57,13 +57,13 @@ interface AnnounceTable
 {
     String TableName="announces";
     String id="id";
-    String TEXTD="TEXTDebut";
-    String TEXTF="TEXTFin";
+    String dateD="TEXTDebut";
+    String dateF="TEXTFin";
     String titre="titre";
     String description="description";
     String urlPrincipalImage="urlPrincipalImage";
     String categorie="id_cat";
-    String TEXTInserted="TEXTinser";
+    String dateInserted ="dateinser";
 }
 interface SiteTable
 {
@@ -73,7 +73,7 @@ interface SiteTable
     String Organisation="organisation";
     String localisationX="Longitude";
     String localisationY="Latitude";
-    String TEXTInserted="TEXTinser";
+    String dateInserted ="dateinser";
 }
 interface ImagesTable
 {
