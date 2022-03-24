@@ -1,11 +1,13 @@
-package com.fstm.coredumped.smartwalkabilty.routing.model.bo;
+package com.fstm.coredumped.smartwalkabilty.core.routing.model.bo;
 
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Vertex
+public class Vertex implements Serializable
 {
+    private static final long serialVersionUID=5L;
     static int count=0;
     int id;
     private GeoPoint depart;
@@ -78,11 +80,6 @@ public class Vertex
 
     @Override
     public String toString() {
-        return "Vertex{" +
-                "id=" + id +
-                ", depart=" + depart +
-                ", Arrive=" + Arrive +
-                ", distance=" + distance +
-                '}';
+        return "["+this.depart.toString()+"], ["+this.Arrive.toString()+"]";
     }
 }

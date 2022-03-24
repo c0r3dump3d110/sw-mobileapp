@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
-import com.fstm.coredumped.smartwalkabilty.routing.model.bo.Chemin;
+import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOAnnonce;
@@ -16,32 +16,32 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class ClientSocket
 {
     Overlay overlay;
-    public static String server="192.168.1.100";
-    public static int port=1337;
+
     public void SendRoutingReq(MyTouchOverlay overlay ,GeoPoint depart,GeoPoint arrive)
     {
         this.overlay=overlay;
         ShortestPathReq shortestPathReq=new ShortestPathReq(15,depart,arrive);
-        new Routing().doInBackground(shortestPathReq);
+        new Routing().execute(shortestPathReq);
     }
-    public Socket ConnectToServer(){
-        try {
-            InetAddress address=InetAddress.getByName(server);
-            Socket socket= new Socket(address,port);
-            return socket;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+
     class Routing extends AsyncTask<ShortestPathReq,Void, List<Chemin>>{
+        public String server="172.17.36.235";
+        public int port=1337;
+        public Socket ConnectToServer(){
+            try {
+                InetAddress address=InetAddress.getByName(server);
+                Socket socket= new Socket(address,port);
+                return socket;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
         @Override
         protected List<Chemin> doInBackground(ShortestPathReq... shortestPathReqs) {
             try {
@@ -50,15 +50,19 @@ public class ClientSocket
                 ObjectInputStream objectInputStream=new ObjectInputStream(socket.getInputStream());
                 outputStream.writeObject(shortestPathReqs[0]);
                 outputStream.flush();
-                return (List<Chemin>) objectInputStream.readObject();
+                List<Chemin> chemins= (List<Chemin>) objectInputStream.readObject();
+                socket.close();
+                outputStream.close();
+                objectInputStream.close();
+                return chemins;
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }catch (Exception e){
+                e.printStackTrace();
                 return null;
             }
         }
-
         @Override
         protected void onPostExecute(List<Chemin> chemins) {
            RoutingProcess(chemins);

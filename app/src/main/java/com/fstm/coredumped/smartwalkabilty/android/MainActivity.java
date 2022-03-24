@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.fstm.coredumped.android.R;
+import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
+import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 
 import org.osmdroid.api.IMapController;
@@ -95,5 +97,10 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+    private void Test(){
+        Chemin chemin = new Chemin();
+        chemin.Add_Route(new Vertex(new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(33.5523542,-7.668459),
+                new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(),20));
 
+    }
 }

@@ -6,9 +6,11 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class GeoPoint {
+public class GeoPoint implements Serializable {
+    private static final long serialVersionUID=15L;
     private static int num=0;
     public GeoPoint() {
 
@@ -61,11 +63,7 @@ public class GeoPoint {
     }
     @Override
     public String toString() {
-        return "GeoPoint{" +
-                "id=" + id +
-                ", laltittude=" + laltittude +
-                ", longtitude=" + longtitude +
-                '}';
+        return "["+this.laltittude+","+this.longtitude+"]";
     }
 
     @Override
@@ -83,7 +81,7 @@ public class GeoPoint {
         double dlat = lat2 - lat1;
         double ans = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlong / 2), 2);
         ans = 2 * asin(sqrt(ans));
-        ans*=R*1000;
+        ans*=1000*R;
         return ans;
     }
     public static double toRadians(double ree)
@@ -91,5 +89,6 @@ public class GeoPoint {
         double one_deg = (Math.PI) / 180;
         return (one_deg * ree);
     }
+
 }
 

@@ -27,7 +27,7 @@ public class Connexion extends SQLiteOpenHelper
         String DATABASE_TABLE_Announce_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s TEXT,%s TEXT,%s TEXT,%s TEXT,%s INTEGER,%s TEXTTIME);", AnnounceTable.TableName, AnnounceTable.id, AnnounceTable.dateD, AnnounceTable.dateF, AnnounceTable.titre, AnnounceTable.description, AnnounceTable.urlPrincipalImage, AnnounceTable.categorie, AnnounceTable.dateInserted);
         String DATABASE_TABLE_Site_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s REAL,%s REAL,%s TEXT,%s TEXT);",SiteTable.TableName,SiteTable.id,SiteTable.Name,SiteTable.localisationX,SiteTable.localisationY,SiteTable.Organisation,SiteTable.dateInserted);
         String DATABASE_TABLE_Images_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s TEXT,%s INTEGER);",ImagesTable.TableName,ImagesTable.id,ImagesTable.lien,ImagesTable.Announce);
-        String DATABASE_TABLE_AS_CREATE = String.format("CREATE TABLE %s ( %s INTEGER PRIMARY KEY,%s INTEGER PRIMARY KEY);",A_S_Table.TableName,A_S_Table.Announce,A_S_Table.Site);
+        String DATABASE_TABLE_AS_CREATE = String.format("CREATE TABLE %s ( %s INTEGER,%s INTEGER );",A_S_Table.TableName,A_S_Table.Announce,A_S_Table.Site);
         sqLiteDatabase.execSQL(DATABASE_TABLE_Announce_CREATE);
         sqLiteDatabase.execSQL(DATABASE_TABLE_Site_CREATE);
         sqLiteDatabase.execSQL(DATABASE_TABLE_Images_CREATE);
@@ -40,7 +40,7 @@ public class Connexion extends SQLiteOpenHelper
     public void ClearDB(){
        SQLiteDatabase database=  conn.getWritableDatabase();
        try {
-           database.endTransaction();
+           database.beginTransaction();
            database.delete(AnnounceTable.TableName,null,null);
            database.delete(A_S_Table.TableName,null,null);
            database.delete(SiteTable.TableName,null,null);

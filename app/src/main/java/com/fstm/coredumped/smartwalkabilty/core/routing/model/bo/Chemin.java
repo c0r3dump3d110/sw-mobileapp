@@ -1,14 +1,30 @@
-package com.fstm.coredumped.smartwalkabilty.routing.model.bo;
+package com.fstm.coredumped.smartwalkabilty.core.routing.model.bo;
+
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Chemin
+public class Chemin implements Serializable
 {
+    private static final long serialVersionUID=10L;
+
     Set<Vertex> vertices =new HashSet<Vertex>();
     Set<Annonce> annonces =new HashSet<Annonce>();
+    int priority;
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 
     public Set<Annonce> getAnnonces() {
         return annonces;
@@ -42,9 +58,10 @@ public class Chemin
 
     @Override
     public String toString() {
-        return "Chemin{" +
-                "vertices=" + vertices +
-                ", annonces=" + annonces +
+        return "{" +
+                "\"type\":"+ "\"LineString\","+
+                "\"coordinates\": "
+                +vertices +
                 '}';
     }
 }
