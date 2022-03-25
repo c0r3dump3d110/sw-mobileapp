@@ -6,8 +6,10 @@ import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
+import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOAnnonce;
+import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOSite;
 
 import org.osmdroid.views.overlay.Overlay;
 
@@ -74,8 +76,8 @@ public class ClientSocket
         MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
         for (Chemin c : chemins) {
             touchOverlay.VisualiseChemin(c);
-            for (Annonce a: c.getAnnonces()) {
-                DAOAnnonce.getDAOAnnonce().Create(a);
+            for (Site a: c.getSites()) {
+                DAOSite.getDaoSite().Create(a);
             }
         }
     }

@@ -44,6 +44,11 @@ public class DAOSite implements IDAO<Site>{
             db.insertOrThrow(TableName,null,contentValues);
             db.setTransactionSuccessful();
             db.endTransaction();
+            for (Annonce annonce:
+                 obj.getAnnonces() ) {
+                annonce.AddSite(obj);
+                DAOAnnonce.getDAOAnnonce().Create(annonce);
+            }
         }catch (Exception e)
         {
             db.endTransaction();

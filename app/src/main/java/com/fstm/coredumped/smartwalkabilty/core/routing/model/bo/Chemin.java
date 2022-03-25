@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
+import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
 
 import java.io.Serializable;
 import java.util.*;
@@ -13,9 +14,8 @@ import java.util.*;
 public class Chemin implements Serializable
 {
     private static final long serialVersionUID=10L;
-
     Set<Vertex> vertices =new HashSet<Vertex>();
-    Set<Annonce> annonces =new HashSet<Annonce>();
+    Set<Site> sites =new HashSet<Site>();
     int priority;
 
     public int getPriority() {
@@ -26,16 +26,16 @@ public class Chemin implements Serializable
         this.priority = priority;
     }
 
-    public Set<Annonce> getAnnonces() {
-        return annonces;
+    public Set<Site> getSites() {
+        return sites;
     }
 
-    public void setAnnonces(Set<Annonce> annonces) {
-        this.annonces = annonces;
+    public void setSites(Set<Site> sites) {
+        this.sites = sites;
     }
-    public void Add_Annonce(Annonce annonce)
+    public void Add_Site(Site site)
     {
-        annonces.add(annonce);
+        sites.add(site);
     }
     public Set<Vertex> getVertices() {
         return vertices;

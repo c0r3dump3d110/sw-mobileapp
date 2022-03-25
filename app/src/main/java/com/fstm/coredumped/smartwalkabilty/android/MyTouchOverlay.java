@@ -112,7 +112,9 @@ public class MyTouchOverlay extends Overlay
             line.setVisible(true);
             mapView.getOverlays().add(line);
             mapView.invalidate();
+
         }
+
        /* for (GeoPoint g:
              points) {
             CreateMarker(g);

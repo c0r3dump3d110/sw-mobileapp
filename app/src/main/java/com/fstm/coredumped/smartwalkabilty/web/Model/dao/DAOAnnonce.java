@@ -75,7 +75,7 @@ public class DAOAnnonce implements IDAO<Annonce>{
     }
     public boolean Create_Relation_Ann_Site(Annonce annonce,Site site)
     {
-        DAOSite.getDaoSite().Create(site);
+        //DAOSite.getDaoSite().Create(site);
         SQLiteDatabase database=Connexion.getCon().getWritableDatabase();
         database.beginTransaction();
         try {
