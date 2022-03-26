@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.fstm.coredumped.android.R;
+import com.fstm.coredumped.smartwalkabilty.android.model.bo.GPSLocation;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
@@ -36,15 +37,16 @@ public class MainActivity extends AppCompatActivity {
         map.setTileSource(TileSourceFactory.MAPNIK);
         requestPermissionsIfNecessary(new String[] {
                  Manifest.permission.ACCESS_FINE_LOCATION,
-
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
-        Connexion.ConstructDb(getApplicationContext());
+        initALL();
         map.setMultiTouchControls(true);
         map.getOverlayManager().add(new MyTouchOverlay(getApplicationContext()));
         IMapController mapController = map.getController();
         mapController.setZoom(15.8);
-        GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
+        //GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
+        GeoPoint startPoint= Geo.turnGEOOSM( GPSLocation.getCurrentLocation());
         mapController.setCenter(startPoint);
     }
     @Override
@@ -102,5 +104,9 @@ public class MainActivity extends AppCompatActivity {
         chemin.Add_Route(new Vertex(new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(33.5523542,-7.668459),
                 new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(),20));
 
+    }
+    private void initALL(){
+        Connexion.ConstructDb(getApplicationContext());
+        GPSLocation.initLocation(getApplicationContext());
     }
 }

@@ -100,14 +100,15 @@ public class MyTouchOverlay extends Overlay
     public void VisualiseChemin(Chemin chemin)
     {
         Set<GeoPoint> points = new HashSet<>();
-        if(chemin.getPriority()==1)
+        if(chemin.getPriority()==1 || chemin.getPriority()==-1)
         for (Vertex v: chemin.getVertices()) {
            List<GeoPoint> list=new ArrayList<>();
             list.add(Geo.turnGEOOSM(v.getArrive()));
             list.add(Geo.turnGEOOSM(v.getDepart()));
             Polyline line = new Polyline();
             line.setPoints(list);
-            line.getOutlinePaint().setColor(Color.BLUE);
+           if(chemin.getPriority()==1)  line.getOutlinePaint().setColor(Color.BLUE);
+           else line.getOutlinePaint().setColor(Color.GREEN);
             line.setGeodesic(true);
             line.setVisible(true);
             mapView.getOverlays().add(line);

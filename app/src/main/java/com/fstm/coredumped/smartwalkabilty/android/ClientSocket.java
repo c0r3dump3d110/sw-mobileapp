@@ -32,7 +32,7 @@ public class ClientSocket
     }
 
     class Routing extends AsyncTask<ShortestPathReq,Void, List<Chemin>>{
-        public String server="172.17.36.235";
+        public String server="192.168.1.100";
         public int port=1337;
         public Socket ConnectToServer(){
             try {
@@ -57,10 +57,7 @@ public class ClientSocket
                 outputStream.close();
                 objectInputStream.close();
                 return chemins;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -72,6 +69,7 @@ public class ClientSocket
     }
     private void RoutingProcess(List<Chemin> chemins)
     {
+        if(chemins!=null){
         Connexion.getCon().ClearDB();
         MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
         for (Chemin c : chemins) {
@@ -79,6 +77,7 @@ public class ClientSocket
             for (Site a: c.getSites()) {
                 DAOSite.getDaoSite().Create(a);
             }
+        }
         }
     }
 
