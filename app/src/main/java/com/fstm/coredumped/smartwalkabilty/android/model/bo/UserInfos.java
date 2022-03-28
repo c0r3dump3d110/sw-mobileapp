@@ -7,31 +7,60 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
 import java.util.List;
 
-public class GPSLocation {
-    public static Context myContext;
+public class UserInfos {
+    private Context myContext;
+    private static UserInfos userInfos;
+    private double radius;
+    private boolean routing;
+    private List<Integer> cats;
 
-    public static void initLocation(Context context) {
-        myContext = context;
+    public List<Integer> getCats() {
+        return cats;
     }
 
-    public static GeoPoint getCurrentLocation() {
+    public void setCats(List<Integer> cats) {
+        this.cats = cats;
+    }
+
+    public synchronized boolean isRouting() {
+        return routing;
+    }
+
+    public synchronized void setRouting(boolean routing) {
+        this.routing = routing;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    private UserInfos(Context myContext) {
+        this.myContext = myContext;
+    }
+
+    public static void initUserInfosObject(Context context)
+    {
+       userInfos=new UserInfos(context);
+    }
+    public static UserInfos getInstance()
+    {
+        return userInfos;
+    }
+    public GeoPoint getCurrentLocation() {
         try {
             LocationManager locationManager = (LocationManager) myContext.getSystemService(LOCATION_SERVICE);
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                DemandeTurnOnGPS();
-            }
             if (ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 System.out.println("Impossible");
                 return new GeoPoint();
@@ -55,7 +84,6 @@ public class GPSLocation {
                 continue;
             }
             if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
                 bestLocation = l;
             }
         }

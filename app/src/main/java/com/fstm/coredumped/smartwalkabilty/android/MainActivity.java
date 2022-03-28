@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.fstm.coredumped.android.R;
-import com.fstm.coredumped.smartwalkabilty.android.model.bo.GPSLocation;
+import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         IMapController mapController = map.getController();
         mapController.setZoom(15.8);
         //GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
-        GeoPoint startPoint= Geo.turnGEOOSM( GPSLocation.getCurrentLocation());
+        GeoPoint startPoint= Geo.turnGEOOSM( UserInfos.getInstance().getCurrentLocation());
         mapController.setCenter(startPoint);
     }
     @Override
@@ -107,6 +107,6 @@ public class MainActivity extends AppCompatActivity {
     }
     private void initALL(){
         Connexion.ConstructDb(getApplicationContext());
-        GPSLocation.initLocation(getApplicationContext());
+        UserInfos.initUserInfosObject(getApplicationContext());
     }
 }

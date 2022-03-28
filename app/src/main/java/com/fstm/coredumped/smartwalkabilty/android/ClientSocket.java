@@ -2,6 +2,7 @@ package com.fstm.coredumped.smartwalkabilty.android;
 
 import android.os.AsyncTask;
 
+import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
@@ -64,7 +65,11 @@ public class ClientSocket
         }
         @Override
         protected void onPostExecute(List<Chemin> chemins) {
-           RoutingProcess(chemins);
+            if(chemins!=null)
+            {
+                UserInfos.getInstance().setRouting(true);
+                RoutingProcess(chemins);
+            }
         }
     }
     private void RoutingProcess(List<Chemin> chemins)
