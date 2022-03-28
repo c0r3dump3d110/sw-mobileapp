@@ -99,12 +99,6 @@ public class MainActivity extends AppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-    private void Test(){
-        Chemin chemin = new Chemin();
-        chemin.Add_Route(new Vertex(new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(33.5523542,-7.668459),
-                new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(),20));
-
-    }
     private void initALL(){
         Connexion.ConstructDb(getApplicationContext());
         UserInfos.initUserInfosObject(getApplicationContext());
