@@ -66,6 +66,7 @@ public class DAOAnnonce implements IDAO<Annonce>{
         preparedStatement.put(titre,obj.getTitre());
         preparedStatement.put(urlPrincipalImage,obj.getUrlPrincipalImage());
         preparedStatement.put(description,obj.getDescription());
+        preparedStatement.put(categorie,obj.getCategorie().getId());
     }
 
     @Override
