@@ -13,14 +13,15 @@ import androidx.core.app.ActivityCompat;
 
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfos {
     private Context myContext;
     private static UserInfos userInfos;
-    private double radius;
+    private double radius=15;
     private boolean routing;
-    private List<Integer> cats;
+    private List<Integer> cats=new ArrayList<>();
 
     public List<Integer> getCats() {
         return cats;
@@ -48,6 +49,8 @@ public class UserInfos {
 
     private UserInfos(Context myContext) {
         this.myContext = myContext;
+        cats.add(1);
+        cats.add(2);
     }
 
     public static void initUserInfosObject(Context context)
