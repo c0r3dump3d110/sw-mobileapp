@@ -104,6 +104,8 @@ public class RoutingHelper extends Thread{
             try {
                 Thread.sleep(1000);
                 pointD=UserInfos.getInstance().getCurrentLocation();
+                overlay.getDepartMark().setVisible(false);
+                overlay.ReshowMarkerDep(GeoMethods.turnGEOOSM(pointD));
                 if(pointD.distanceToInMeters(pointA) <= 10){
                     stopMe();
                 }else{

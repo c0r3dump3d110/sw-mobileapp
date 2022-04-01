@@ -158,7 +158,7 @@ public class RoutingOverlay extends Overlay
         mapView.getOverlays().add(marker1);
         return marker1;
     }
-    private void ReshowMarkerDep(GeoPoint loc){
+    public void ReshowMarkerDep(GeoPoint loc){
         if(DepartMark==null)
         {
             DepartMark=CreateMarker(loc,true);
