@@ -3,7 +3,7 @@ package com.fstm.coredumped.smartwalkabilty.android.deamon;
 import com.fstm.coredumped.smartwalkabilty.android.ClientSocket;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
 
-public class RoutingChecker extends Thread{
+public class AnnonceDeamon_noRouting extends Thread{
     @Override
     public void run() {
         try {

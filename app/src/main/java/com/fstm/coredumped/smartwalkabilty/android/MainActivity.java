@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.fstm.coredumped.android.R;
+import com.fstm.coredumped.smartwalkabilty.android.deamon.AnnonceDeamon_noRouting;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 
@@ -100,5 +101,6 @@ public class MainActivity extends AppCompatActivity {
     private void initALL(){
         Connexion.ConstructDb(getApplicationContext());
         UserInfos.initUserInfosObject(getApplicationContext());
+        new AnnonceDeamon_noRouting().start();
     }
 }
