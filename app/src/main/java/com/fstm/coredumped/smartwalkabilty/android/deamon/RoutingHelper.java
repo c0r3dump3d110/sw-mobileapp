@@ -1,4 +1,4 @@
-package com.fstm.coredumped.smartwalkabilty.android.deamn;
+package com.fstm.coredumped.smartwalkabilty.android.deamon;
 
 import android.graphics.Color;
 
@@ -27,7 +27,7 @@ public class RoutingHelper extends Thread{
    List<Chemin> chemins ;
    RoutingOverlay overlay;
    Vertex currentVertex=null;
-   Map<Vertex,Polyline> polylineMap=new HashMap<>();
+   Map<Vertex,Set<Polyline>> polylineMap=new HashMap<>();
 
     public RoutingHelper( List<Chemin> chemins, RoutingOverlay ovel) {
         this.pointD = ovel.getDepart();
@@ -63,7 +63,8 @@ public class RoutingHelper extends Thread{
                 else line.getOutlinePaint().setColor(Color.GREEN);
                 line.setGeodesic(true);
                 line.setVisible(true);
-                polylineMap.put(v,line);
+                if(!polylineMap.containsKey(v)) polylineMap.put(v,new HashSet<>());
+                polylineMap.get(v).add(line);
                 overlay.getMapView().getOverlays().add(line);
                 overlay.getMapView().invalidate();
             }
@@ -71,6 +72,8 @@ public class RoutingHelper extends Thread{
     }
     public void RoutingProcess()
     {
+        UserInfos.getInstance().setRouting(true);
+        overlay.setHelper(this);
         if(chemins!=null){
             Connexion.getCon().ClearDB();
             for (Chemin c : chemins) {
@@ -83,22 +86,19 @@ public class RoutingHelper extends Thread{
     }
     public void stopMe()
     {
-        for (Polyline v: polylineMap.values()) {
-            overlay.getMapView().getOverlays().remove(v);
-        }
-        overlay.getMapView().invalidate();
+        justClear();
         running=false;
         this.interrupt();
     }
     private void removePolyline(Vertex v){
-        overlay.getMapView().getOverlays().remove(polylineMap.get(v));
+        for (Polyline poly: polylineMap.get(v)) {
+            overlay.getMapView().getOverlays().remove(poly);
+        }
         overlay.getMapView().invalidate();
     }
     @Override
     public void run()
     {
-        UserInfos.getInstance().setRouting(true);
-        overlay.setHelper(this);
         RoutingProcess();
         while (running){
             try {
@@ -118,4 +118,13 @@ public class RoutingHelper extends Thread{
         }
     }
 
+    public void justClear() {
+        for (Set<Polyline> v: polylineMap.values()) {
+            for (Polyline po : v) {
+                overlay.getMapView().getOverlays().remove(po);
+            }
+        }
+        UserInfos.getInstance().setRouting(false);
+        overlay.getMapView().invalidate();
+    }
 }

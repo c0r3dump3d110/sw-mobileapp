@@ -1,27 +1,18 @@
 package com.fstm.coredumped.smartwalkabilty.android;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 
 import com.fstm.coredumped.android.R;
-import com.fstm.coredumped.smartwalkabilty.android.deamn.RoutingHelper;
+import com.fstm.coredumped.smartwalkabilty.android.deamon.RoutingHelper;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
-import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
-import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
-import org.osmdroid.views.overlay.Polyline;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class RoutingOverlay extends Overlay
 {
@@ -150,6 +141,7 @@ public class RoutingOverlay extends Overlay
             ArriveMark.setVisible(false);
             depart=geoPoint;
             ReshowMarkerDep(loc);
+            if(helper!=null)helper.justClear();
         }
         if(Arrive!=null)BeginRouting();
         return true;
