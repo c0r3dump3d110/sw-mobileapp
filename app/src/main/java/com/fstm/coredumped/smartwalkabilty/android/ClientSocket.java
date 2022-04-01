@@ -2,15 +2,10 @@ package com.fstm.coredumped.smartwalkabilty.android;
 
 import android.os.AsyncTask;
 
-import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
+import com.fstm.coredumped.smartwalkabilty.android.deamn.RoutingHelper;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
-import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
-import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
-import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
-import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOAnnonce;
-import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOSite;
 
 import org.osmdroid.views.overlay.Overlay;
 
@@ -25,7 +20,7 @@ public class ClientSocket
 {
     Overlay overlay;
 
-    public void SendRoutingReq(MyTouchOverlay overlay ,GeoPoint depart,GeoPoint arrive)
+    public void SendRoutingReq(RoutingOverlay overlay , GeoPoint depart, GeoPoint arrive)
     {
         this.overlay=overlay;
         ShortestPathReq shortestPathReq=new ShortestPathReq(15,depart,arrive);
@@ -67,23 +62,11 @@ public class ClientSocket
         protected void onPostExecute(List<Chemin> chemins) {
             if(chemins!=null)
             {
-                UserInfos.getInstance().setRouting(true);
-                RoutingProcess(chemins);
+                if(((RoutingOverlay)overlay).getMethod()==RoutingOverlay.METHOD_ONE_POINTS) new RoutingHelper(chemins,(RoutingOverlay)overlay).start();
+                else if(((RoutingOverlay)overlay).getMethod()==RoutingOverlay.METHOD_TWO_POINTS) new RoutingHelper(chemins,(RoutingOverlay) overlay).RoutingProcess();
             }
         }
     }
-    private void RoutingProcess(List<Chemin> chemins)
-    {
-        if(chemins!=null){
-        Connexion.getCon().ClearDB();
-        MyTouchOverlay touchOverlay=(MyTouchOverlay) overlay;
-        for (Chemin c : chemins) {
-            touchOverlay.VisualiseChemin(c);
-            for (Site a: c.getSites()) {
-                DAOSite.getDaoSite().Create(a);
-            }
-        }
-        }
-    }
+
 
 }

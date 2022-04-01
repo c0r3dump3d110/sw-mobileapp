@@ -12,8 +12,6 @@ import android.preference.PreferenceManager;
 
 import com.fstm.coredumped.android.R;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
-import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
-import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 
 import org.osmdroid.api.IMapController;
@@ -42,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
         });
         initALL();
         map.setMultiTouchControls(true);
-        map.getOverlayManager().add(new MyTouchOverlay(getApplicationContext()));
+        map.getOverlayManager().add(new RoutingOverlay(getApplicationContext()));
         IMapController mapController = map.getController();
         mapController.setZoom(15.8);
         //GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
-        GeoPoint startPoint= Geo.turnGEOOSM( UserInfos.getInstance().getCurrentLocation());
+        GeoPoint startPoint= GeoMethods.turnGEOOSM( UserInfos.getInstance().getCurrentLocation());
         mapController.setCenter(startPoint);
     }
     @Override

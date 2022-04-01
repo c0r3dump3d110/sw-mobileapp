@@ -1,0 +1,121 @@
+package com.fstm.coredumped.smartwalkabilty.android.deamn;
+
+import android.graphics.Color;
+
+import com.fstm.coredumped.smartwalkabilty.android.GeoMethods;
+import com.fstm.coredumped.smartwalkabilty.android.RoutingOverlay;
+import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
+import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
+import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
+import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
+import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
+import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
+import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOSite;
+
+import org.osmdroid.views.overlay.Polyline;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class RoutingHelper extends Thread{
+   private GeoPoint pointD,pointA;
+   private boolean running=true;
+   List<Chemin> chemins ;
+   RoutingOverlay overlay;
+   Vertex currentVertex=null;
+   Map<Vertex,Polyline> polylineMap=new HashMap<>();
+
+    public RoutingHelper( List<Chemin> chemins, RoutingOverlay ovel) {
+        this.pointD = ovel.getDepart();
+        this.pointA = ovel.getArrive();
+        this.chemins = chemins;
+        this.overlay=ovel;
+
+    }
+    private Vertex calculateVertexCurrent(){
+        Set<Vertex> vertices=polylineMap.keySet();
+        double minDistance=Double.MAX_VALUE;
+        Vertex closest=null;
+        for(Vertex v : vertices){
+            double dist=GeoMethods.distanceToCenterOfVertex(v,pointD);
+            if(closest==null || dist<minDistance){
+                minDistance=dist;
+                closest=v;
+            }
+        }
+        return closest;
+    }
+    public void VisualiseChemin(Chemin chemin)
+    {
+        if(chemin.getPriority()==1 || chemin.getPriority()==-1)
+            for (Vertex v: chemin.getVertices()) {
+                List<org.osmdroid.util.GeoPoint> list=new ArrayList<>();
+                list.add(GeoMethods.turnGEOOSM(v.getArrive()));
+                list.add(GeoMethods.turnGEOOSM(v.getDepart()));
+                if(v.getDepart().equals(pointD))currentVertex=v;
+                Polyline line = new Polyline();
+                line.setPoints(list);
+                if(chemin.getPriority()==1) { line.getOutlinePaint().setColor(Color.BLUE);}
+                else line.getOutlinePaint().setColor(Color.GREEN);
+                line.setGeodesic(true);
+                line.setVisible(true);
+                polylineMap.put(v,line);
+                overlay.getMapView().getOverlays().add(line);
+                overlay.getMapView().invalidate();
+            }
+
+    }
+    public void RoutingProcess()
+    {
+        if(chemins!=null){
+            Connexion.getCon().ClearDB();
+            for (Chemin c : chemins) {
+                VisualiseChemin(c);
+                for (Site a: c.getSites()) {
+                    DAOSite.getDaoSite().Create(a);
+                }
+            }
+        }
+    }
+    public void stopMe()
+    {
+        for (Polyline v: polylineMap.values()) {
+            overlay.getMapView().getOverlays().remove(v);
+        }
+        overlay.getMapView().invalidate();
+        running=false;
+        this.interrupt();
+    }
+    private void removePolyline(Vertex v){
+        overlay.getMapView().getOverlays().remove(polylineMap.get(v));
+        overlay.getMapView().invalidate();
+    }
+    @Override
+    public void run()
+    {
+        UserInfos.getInstance().setRouting(true);
+        overlay.setHelper(this);
+        RoutingProcess();
+        while (running){
+            try {
+                Thread.sleep(1000);
+                pointD=UserInfos.getInstance().getCurrentLocation();
+                if(pointD.distanceToInMeters(pointA) <= 10){
+                    stopMe();
+                }else{
+                    Vertex v=calculateVertexCurrent();
+                    if(v.equals(currentVertex))continue;
+                    removePolyline(currentVertex);
+                    currentVertex=v;
+                }
+            } catch (InterruptedException e) {
+               return;
+            }
+        }
+    }
+
+}
