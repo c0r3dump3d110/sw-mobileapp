@@ -26,12 +26,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+    private RoutingOverlay routingOverlay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.app_bar_main);
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         requestPermissionsIfNecessary(new String[] {
@@ -41,12 +42,9 @@ public class MainActivity extends AppCompatActivity {
         });
         initALL();
         map.setMultiTouchControls(true);
-        map.getOverlayManager().add(new RoutingOverlay(getApplicationContext()));
-        IMapController mapController = map.getController();
-        mapController.setZoom(15.8);
-        //GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
-        GeoPoint startPoint= GeoMethods.turnGEOOSM( UserInfos.getInstance().getCurrentLocation());
-        mapController.setCenter(startPoint);
+        map.getOverlayManager().add(routingOverlay);
+        goToMyLocation();
+
     }
     @Override
     public void onResume() {
@@ -99,8 +97,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void initALL(){
+        routingOverlay= new RoutingOverlay(getApplicationContext());
         Connexion.ConstructDb(getApplicationContext());
         UserInfos.initUserInfosObject(getApplicationContext());
         new AnnonceDeamon_noRouting().start();
+    }
+    private void goToMyLocation()
+    {
+        IMapController mapController = map.getController();
+        mapController.setZoom(15.8);
+        //GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
+        GeoPoint startPoint= GeoMethods.turnGEOOSM( UserInfos.getInstance().getCurrentLocation());
+        mapController.setCenter(startPoint);
     }
 }
