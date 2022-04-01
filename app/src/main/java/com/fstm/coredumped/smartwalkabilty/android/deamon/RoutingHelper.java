@@ -72,7 +72,6 @@ public class RoutingHelper extends Thread{
     }
     public void RoutingProcess()
     {
-        UserInfos.getInstance().setRouting(true);
         overlay.setHelper(this);
         if(chemins!=null){
             Connexion.getCon().ClearDB();
@@ -88,6 +87,7 @@ public class RoutingHelper extends Thread{
     {
         justClear();
         running=false;
+        UserInfos.getInstance().setRouting(false);
         this.interrupt();
     }
     private void removePolyline(Vertex v){
@@ -99,6 +99,7 @@ public class RoutingHelper extends Thread{
     @Override
     public void run()
     {
+        UserInfos.getInstance().setRouting(true);
         RoutingProcess();
         while (running){
             try {

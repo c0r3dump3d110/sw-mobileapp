@@ -59,7 +59,17 @@ public class RoutingOverlay extends Overlay
     }
 
     public void setMethod(int method) {
-        this.method = method;
+        if(method!=this.method) {
+            this.method = method;
+            depart=null;
+            Arrive=null;
+            if(DepartMark!=null) DepartMark.setVisible(false);
+            if(ArriveMark!=null) ArriveMark.setVisible(false);
+            if(helper!=null){
+                helper.stopMe();
+                helper=null;
+            }
+        }
     }
 
     public com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint getDepart() {
@@ -113,7 +123,10 @@ public class RoutingOverlay extends Overlay
             Arrive=geoPoint;
             ArriveMark.setVisible(false);
             ReshowMarkerArr(loc);
-            if(helper!=null)helper.stopMe();
+            if(helper!=null){
+                helper.stopMe();
+                helper=null;
+            }
         }
         BeginRouting();
         return true;
@@ -142,7 +155,10 @@ public class RoutingOverlay extends Overlay
             ArriveMark.setVisible(false);
             depart=geoPoint;
             ReshowMarkerDep(loc);
-            if(helper!=null)helper.justClear();
+            if(helper!=null){
+                helper.stopMe();
+                helper=null;
+            }
         }
         if(Arrive!=null)BeginRouting();
         return true;

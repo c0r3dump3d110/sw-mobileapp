@@ -20,7 +20,7 @@ public class UserInfos {
     private Context myContext;
     private static UserInfos userInfos;
     private double radius=15;
-    private boolean routing;
+    private boolean routing=false;
     private List<Integer> cats=new ArrayList<>();
 
     public List<Integer> getCats() {

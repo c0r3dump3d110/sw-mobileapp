@@ -1,5 +1,6 @@
 package com.fstm.coredumped.smartwalkabilty.android;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -9,6 +10,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.fstm.coredumped.android.R;
 import com.fstm.coredumped.smartwalkabilty.android.deamon.AnnonceDeamon_noRouting;
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.app_bar_main);
+        setSupportActionBar(findViewById(R.id.toolbar));
+
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         requestPermissionsIfNecessary(new String[] {
@@ -44,8 +51,41 @@ public class MainActivity extends AppCompatActivity {
         map.setMultiTouchControls(true);
         map.getOverlayManager().add(routingOverlay);
         goToMyLocation();
+        findViewById(R.id.Buttlocation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                routingOverlay.setMethod(RoutingOverlay.METHOD_ONE_POINTS);
+                goToMyLocation();
+                Toast.makeText(MainActivity.this,"the start is by default your location now choose the end point",Toast.LENGTH_LONG).show();
+            }
+        });
+        findViewById(R.id.Butt_TwoMethod).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                routingOverlay.setMethod(RoutingOverlay.METHOD_TWO_POINTS);
+                Toast.makeText(MainActivity.this,"You Choose the start and end Points now",Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return  true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                Toast.makeText(MainActivity.this,"Omar this is where you set your page",Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -106,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
     {
         IMapController mapController = map.getController();
         mapController.setZoom(15.8);
-        //GeoPoint startPoint = new GeoPoint(33.5821209, -7.6038164);
         GeoPoint startPoint= GeoMethods.turnGEOOSM( UserInfos.getInstance().getCurrentLocation());
+        if(startPoint.getLatitude()==0 && startPoint.getLongitude()==0)startPoint = new GeoPoint(33.5821209, -7.6038164);
         mapController.setCenter(startPoint);
     }
 }

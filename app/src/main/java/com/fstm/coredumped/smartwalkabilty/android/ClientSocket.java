@@ -24,7 +24,7 @@ import java.util.List;
 public class ClientSocket
 {
 
-    public static String server="172.17.36.201";
+    public static String server="192.168.1.100";
     public static int port=1337;
     public Socket ConnectToServer(){
         try {
