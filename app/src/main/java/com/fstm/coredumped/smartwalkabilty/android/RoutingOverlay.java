@@ -22,7 +22,8 @@ public class RoutingOverlay extends Overlay
     private Marker DepartMark,ArriveMark;
     private Context pContext;
     private MapView mapView ;
-    private int method =METHOD_TWO_POINTS;
+    private int method =METHOD_ONE_POINTS;
+
     private RoutingHelper helper;
 
     public void setDepartMark(Marker departMark) {
