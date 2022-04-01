@@ -7,12 +7,12 @@ public class AnnonceDeamon_noRouting extends Thread{
     @Override
     public void run() {
         try {
-            Thread.sleep(180000);
+            Thread.sleep(60000);
             while(true){
-                Thread.sleep(300000);
                 if (!UserInfos.getInstance().isRouting()){
                     new ClientSocket().SendAnnoncesReq(UserInfos.getInstance().getCurrentLocation());
                 }
+                Thread.sleep(120000);
             }
         } catch (InterruptedException e) {
             return;
