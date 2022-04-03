@@ -41,7 +41,6 @@ public class SettingsActivity extends AppCompatActivity {
     public static void loadSet_Settings(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         List<Integer> listCategories = null;
-        int method = sp.getInt("itiniraire",1);
         boolean useCategories = sp.getBoolean("useCategories",false);
         if (useCategories) {
             Set<String> categories = sp.getStringSet("categories",null);

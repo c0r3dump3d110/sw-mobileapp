@@ -95,12 +95,12 @@ public class DAOAnnonce implements IDAO<Annonce>{
     }
     private Annonce extractAnnonce(Cursor set) throws SQLException {
         Annonce annonce=new Annonce();
-        annonce.setId(set.getInt(1));
-        annonce.setDescription(set.getString(2));
-        annonce.setUrlPrincipalImage(set.getString(3));
-        annonce.setTitre(set.getString(4));
-        String dated=set.getString(5);
-        String datef=set.getString(6);
+        annonce.setId(set.getInt(0));
+        annonce.setDescription(set.getString(1));
+        annonce.setUrlPrincipalImage(set.getString(2));
+        annonce.setTitre(set.getString(3));
+        String dated=set.getString(4);
+        String datef=set.getString(5);
         SimpleDateFormat dateFormat=new SimpleDateFormat("dow mon dd hh:mm:ss zzz yyyy");
         try {
             annonce.setDateDebut(dateFormat.parse(dated));

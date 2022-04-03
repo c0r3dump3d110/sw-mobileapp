@@ -75,8 +75,8 @@ public class DAOCategorie implements IDAO<Categorie>{
     }
     private Categorie extractCategorie(Cursor set) {
         Categorie categorie=new Categorie();
-        categorie.setCategorie(set.getString(2));
-        categorie.setId(set.getInt(1));
+        categorie.setCategorie(set.getString(1));
+        categorie.setId(set.getInt(0));
         return categorie;
     }
 

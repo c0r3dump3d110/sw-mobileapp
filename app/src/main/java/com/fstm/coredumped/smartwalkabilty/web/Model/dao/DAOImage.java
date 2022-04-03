@@ -71,8 +71,8 @@ public class DAOImage implements IDAO<Image>{
     }
     private Image extractImage(Cursor set) throws SQLException {
         Image image=new Image();
-        image.setUrlImage(set.getString(2));
-        image.setId(set.getInt(1));
+        image.setUrlImage(set.getString(1));
+        image.setId(set.getInt(0));
         return image;
     }
 

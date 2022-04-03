@@ -59,14 +59,14 @@ public class DAOSite implements IDAO<Site>{
     }
     private Site extractSite(Cursor set){
         Site site=new Site();
-        site.setId(set.getInt(1));
-        site.setName(set.getString(2));
+        site.setId(set.getInt(0));
+        site.setName(set.getString(1));
         GeoPoint geoPoint = new GeoPoint();
-        geoPoint.setLaltittude(set.getDouble(5));
-        geoPoint.setLongtitude(set.getDouble(4));
+        geoPoint.setLaltittude(set.getDouble(4));
+        geoPoint.setLongtitude(set.getDouble(3));
         site.setLocalisation(geoPoint);
         site.setOrganisation(new Organisation());
-        site.getOrganisation().setNom(set.getString(3));
+        site.getOrganisation().setNom(set.getString(2));
         return site;
     }
     @Override
