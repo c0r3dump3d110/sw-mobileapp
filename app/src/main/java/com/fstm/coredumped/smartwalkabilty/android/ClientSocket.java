@@ -5,8 +5,9 @@ import android.os.AsyncTask;
 import com.fstm.coredumped.smartwalkabilty.android.deamon.RoutingHelper;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
 import com.fstm.coredumped.smartwalkabilty.common.controller.DeclareDangerReq;
-import com.fstm.coredumped.smartwalkabilty.common.controller.PerimetreReq;
+import com.fstm.coredumped.smartwalkabilty.common.controller.RequestPerimetreAnnonce;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
+import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathWithAnnounces;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Danger;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
@@ -26,8 +27,7 @@ import java.util.List;
 public class ClientSocket
 {
 
-//  public static String server="192.168.1.100";
-    public static String server="192.168.1.11";
+    public static String server="192.168.1.100";
     public static int port=1337;
     public Socket ConnectToServer(){
         try {
@@ -41,13 +41,18 @@ public class ClientSocket
     }
     public void SendRoutingReq(RoutingOverlay overlay , GeoPoint depart, GeoPoint arrive)
     {
-        ShortestPathReq shortestPathReq=new ShortestPathReq(UserInfos.getInstance().getRadius(),depart,arrive);
-        new RoutingTask(overlay).execute(shortestPathReq);
+        if(overlay.getMethod()==RoutingOverlay.METHOD_ONE_POINTS){
+            ShortestPathReq shortestPathReq=new ShortestPathReq(depart,arrive);
+            new RoutingTask(overlay).execute(shortestPathReq);
+        }else {
+            ShortestPathWithAnnounces shortestPathReq1=new ShortestPathWithAnnounces(UserInfos.getInstance().getRadius(),depart,UserInfos.getInstance().getCats(),arrive);
+            new RoutingAnnouncesTask(overlay).execute(shortestPathReq1);
+        }
     }
+
     public void SendAnnoncesReq( GeoPoint point)
     {
-        PerimetreReq perimetreReq=new PerimetreReq(UserInfos.getInstance().getRadius(),point);
-        perimetreReq.getCategorie().addAll(UserInfos.getInstance().getCats());
+        RequestPerimetreAnnonce perimetreReq=new RequestPerimetreAnnonce(UserInfos.getInstance().getRadius(),point,UserInfos.getInstance().getCats());
         new PerimetreTask().execute(perimetreReq);
     }
     public void SendDeclareDangerReq(DeclareDangerActivity context, Danger danger)
@@ -85,16 +90,47 @@ public class ClientSocket
         protected void onPostExecute(List<Chemin> chemins) {
             if(chemins!=null)
             {
-                if(((RoutingOverlay)overlay).getMethod()==RoutingOverlay.METHOD_ONE_POINTS) new RoutingHelper(chemins,(RoutingOverlay)overlay).start();
-                else if(((RoutingOverlay)overlay).getMethod()==RoutingOverlay.METHOD_TWO_POINTS) new RoutingHelper(chemins,(RoutingOverlay) overlay).RoutingProcess();
+               new RoutingHelper(chemins,(RoutingOverlay) overlay).RoutingProcess();
             }
         }
     }
-    class PerimetreTask extends AsyncTask<PerimetreReq,Void, List<Site>>{
+    class RoutingAnnouncesTask extends AsyncTask<ShortestPathWithAnnounces,Void, List<Chemin>>{
+        Overlay overlay;
+
+        public RoutingAnnouncesTask(Overlay overlay) {
+            this.overlay = overlay;
+        }
+        @Override
+        protected List<Chemin> doInBackground(ShortestPathWithAnnounces... shortestPathReqs) {
+            try {
+                Socket socket=ConnectToServer();
+                ObjectOutputStream outputStream=new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream objectInputStream=new ObjectInputStream(socket.getInputStream());
+                outputStream.writeObject(shortestPathReqs[0]);
+                outputStream.flush();
+                List<Chemin> chemins= (List<Chemin>) objectInputStream.readObject();
+                socket.close();
+                outputStream.close();
+                objectInputStream.close();
+                return chemins;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        @Override
+        protected void onPostExecute(List<Chemin> chemins) {
+            if(chemins!=null)
+            {
+                new RoutingHelper(chemins,(RoutingOverlay)overlay).start();
+            }
+        }
+    }
+    class PerimetreTask extends AsyncTask<RequestPerimetreAnnonce,Void, List<Site>>{
 
 
         @Override
-        protected List<Site> doInBackground(PerimetreReq... perimetreReqs) {
+        protected List<Site> doInBackground(RequestPerimetreAnnonce... perimetreReqs) {
             try {
                 Socket socket=ConnectToServer();
                 ObjectOutputStream outputStream=new ObjectOutputStream(socket.getOutputStream());
