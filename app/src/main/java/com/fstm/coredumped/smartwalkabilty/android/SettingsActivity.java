@@ -1,5 +1,6 @@
 package com.fstm.coredumped.smartwalkabilty.android;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -37,8 +38,8 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-    private void loadSet_Settings(){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+    public static void loadSet_Settings(Context context){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         List<Integer> listCategories = null;
         int method = sp.getInt("itiniraire",1);
         boolean useCategories = sp.getBoolean("useCategories",false);

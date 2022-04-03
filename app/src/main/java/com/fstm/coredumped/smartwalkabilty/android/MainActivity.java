@@ -80,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_settings:
-                Toast.makeText(MainActivity.this,"Omar this is where you set your page",Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,"Omar this is where you set your page",Toast.LENGTH_LONG).show();
+                Intent intentsettings = new Intent(this, SettingsActivity.class);
+                startActivity(intentsettings);
                 return true;
             case R.id.action_declareDanger:
                 Intent intent=new Intent(this,DeclareDangerActivity.class);

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.fstm.coredumped.smartwalkabilty.android.SettingsActivity;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class UserInfos {
     {
        userInfos=new UserInfos(context);
        userInfos.DemandLocationOnGPS();
+        SettingsActivity.loadSet_Settings(context);
     }
     public static UserInfos getInstance()
     {
