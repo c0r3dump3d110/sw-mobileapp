@@ -1,0 +1,41 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Calcul d'itiniraire">
+
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/itiniraire_entries"
+            app:entryValues="@array/itiniraire_values"
+            app:key="itiniraire"
+            app:title="Mode de calcul d'itiniraire"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Annonces Categories">
+
+        <SwitchPreferenceCompat
+            app:key="useCategories"
+            app:title="Utiliser des categories specefiques"
+            app:defaultValue="false"/>
+
+        <MultiSelectListPreference
+
+            app:dependency="useCategories"
+            app:key="categories"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:title="Choix de Categories" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="Perimetre Geofencing">
+        <SeekBarPreference
+            app:key="radius"
+            app:title="Perimetre"
+            app:showSeekBarValue="true"
+            app:defaultValue="15" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
