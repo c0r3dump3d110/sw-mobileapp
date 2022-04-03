@@ -22,16 +22,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfos {
+    public static final int SAFEST_PATH =-1;
+    public static final int SHORTEST_PATH =1;
+    public static final int ALT_SHORTEST_PATH_1 =2;
+    public static final int ALT_SHORTEST_PATH_2 =3;
+
     private Context myContext;
     private static UserInfos userInfos;
     private double radius=15;
     private boolean routing=false;
     private Location curentlocation;
-
     private List<Integer> cats=new ArrayList<>();
-
+    private List<Integer> pathsToShow =new ArrayList<>();
     public List<Integer> getCats() {
         return cats;
+    }
+
+    public Context getMyContext() {
+        return myContext;
+    }
+
+    public void setMyContext(Context myContext) {
+        this.myContext = myContext;
+    }
+
+    public List<Integer> getPathsToShow() {
+        return pathsToShow;
+    }
+
+    public void setPathsToShow(List<Integer> pathsToShow) {
+        this.pathsToShow = pathsToShow;
     }
 
     public void setCats(List<Integer> cats) {
@@ -64,7 +84,9 @@ public class UserInfos {
     {
        userInfos=new UserInfos(context);
        userInfos.DemandLocationOnGPS();
-        SettingsActivity.loadSet_Settings(context);
+       SettingsActivity.loadSet_Settings(context);
+       userInfos.pathsToShow.add(SAFEST_PATH);
+       userInfos.pathsToShow.add(SHORTEST_PATH);
     }
     public static UserInfos getInstance()
     {
