@@ -99,7 +99,6 @@ public class RoutingOverlay extends Overlay
     public boolean onSingleTapConfirmed(MotionEvent e, MapView mapView) {
         if(method==METHOD_TWO_POINTS) return MethodNotLocation(e,mapView);
         else if(method==METHOD_ONE_POINTS) return MethodLocation(e,mapView);
-
         return true;
     }
 

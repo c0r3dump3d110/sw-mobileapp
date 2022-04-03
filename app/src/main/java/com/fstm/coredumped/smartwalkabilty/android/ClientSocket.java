@@ -41,10 +41,10 @@ public class ClientSocket
     }
     public void SendRoutingReq(RoutingOverlay overlay , GeoPoint depart, GeoPoint arrive)
     {
-        if(overlay.getMethod()==RoutingOverlay.METHOD_ONE_POINTS){
+        if(overlay.getMethod()==RoutingOverlay.METHOD_TWO_POINTS){
             ShortestPathReq shortestPathReq=new ShortestPathReq(depart,arrive);
             new RoutingTask(overlay).execute(shortestPathReq);
-        }else {
+        }else if(overlay.getMethod()==RoutingOverlay.METHOD_ONE_POINTS) {
             ShortestPathWithAnnounces shortestPathReq1=new ShortestPathWithAnnounces(UserInfos.getInstance().getRadius(),depart,UserInfos.getInstance().getCats(),arrive);
             new RoutingAnnouncesTask(overlay).execute(shortestPathReq1);
         }
@@ -90,7 +90,7 @@ public class ClientSocket
         protected void onPostExecute(List<Chemin> chemins) {
             if(chemins!=null)
             {
-               new RoutingHelper(chemins,(RoutingOverlay) overlay).RoutingProcess();
+               new RoutingHelper(chemins,(RoutingOverlay) overlay,false).RoutingProcess();
             }
         }
     }

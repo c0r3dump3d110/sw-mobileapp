@@ -34,7 +34,13 @@ public class RoutingHelper extends Thread{
         this.pointA = ovel.getArrive();
         this.chemins = chemins;
         this.overlay=ovel;
-
+    }
+    public RoutingHelper( List<Chemin> chemins, RoutingOverlay ovel,boolean running) {
+        this.pointD = ovel.getDepart();
+        this.pointA = ovel.getArrive();
+        this.chemins = chemins;
+        this.overlay=ovel;
+        this.running=false;
     }
     private Vertex calculateVertexCurrent(){
         Set<Vertex> vertices=polylineMap.keySet();
@@ -97,6 +103,8 @@ public class RoutingHelper extends Thread{
     @Override
     public void run()
     {
+        if(running){
+        System.out.println("I ran");
         UserInfos.getInstance().setRouting(true);
         RoutingProcess();
         while (running){
@@ -116,6 +124,7 @@ public class RoutingHelper extends Thread{
             } catch (InterruptedException e) {
                return;
             }
+        }
         }
     }
 
