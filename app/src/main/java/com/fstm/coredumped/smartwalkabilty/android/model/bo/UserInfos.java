@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -147,6 +149,21 @@ public class UserInfos {
             }
             return provider1.equals(provider2);
         }
+        @Override
+        public void onProviderEnabled(@NonNull String provider)
+        {
 
+        }
+
+        @Override
+        public void onProviderDisabled(@NonNull String provider)
+        {
+            Toast.makeText(myContext,"Please Turn on your location services to take full advantage of our app ",Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
     }
 }

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -80,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.action_settings:
                 Toast.makeText(MainActivity.this,"Omar this is where you set your page",Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_declareDanger:
+                Intent intent=new Intent(this,DeclareDangerActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

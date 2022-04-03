@@ -4,9 +4,11 @@ import android.os.AsyncTask;
 
 import com.fstm.coredumped.smartwalkabilty.android.deamon.RoutingHelper;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
+import com.fstm.coredumped.smartwalkabilty.common.controller.DeclareDangerReq;
 import com.fstm.coredumped.smartwalkabilty.common.controller.PerimetreReq;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
+import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Danger;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
@@ -39,19 +41,24 @@ public class ClientSocket
     public void SendRoutingReq(RoutingOverlay overlay , GeoPoint depart, GeoPoint arrive)
     {
         ShortestPathReq shortestPathReq=new ShortestPathReq(UserInfos.getInstance().getRadius(),depart,arrive);
-        new Routing(overlay).execute(shortestPathReq);
+        new RoutingTask(overlay).execute(shortestPathReq);
     }
     public void SendAnnoncesReq( GeoPoint point)
     {
         PerimetreReq perimetreReq=new PerimetreReq(UserInfos.getInstance().getRadius(),point);
         perimetreReq.getCategorie().addAll(UserInfos.getInstance().getCats());
-        new Perimetre().execute(perimetreReq);
+        new PerimetreTask().execute(perimetreReq);
+    }
+    public void SendDeclareDangerReq(DeclareDangerActivity context, Danger danger)
+    {
+        DeclareDangerReq declareDangerReq=new DeclareDangerReq(danger,UserInfos.getInstance().getCurrentLocation());
+        new DangerTask(context).execute(declareDangerReq);
     }
 
-    class Routing extends AsyncTask<ShortestPathReq,Void, List<Chemin>>{
+    class RoutingTask extends AsyncTask<ShortestPathReq,Void, List<Chemin>>{
         Overlay overlay;
 
-        public Routing(Overlay overlay) {
+        public RoutingTask(Overlay overlay) {
             this.overlay = overlay;
         }
 
@@ -82,7 +89,7 @@ public class ClientSocket
             }
         }
     }
-    class Perimetre extends AsyncTask<PerimetreReq,Void, List<Site>>{
+    class PerimetreTask extends AsyncTask<PerimetreReq,Void, List<Site>>{
 
 
         @Override
@@ -112,6 +119,40 @@ public class ClientSocket
                     DAOSite.getDaoSite().Create(site);
                 }
             }
+        }
+    }
+    class DangerTask extends AsyncTask<DeclareDangerReq,Void, Boolean>{
+        DeclareDangerActivity context;
+
+        public DangerTask(DeclareDangerActivity context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Boolean doInBackground(DeclareDangerReq... declareDangerReqs) {
+            try {
+                Socket socket=ConnectToServer();
+                ObjectOutputStream outputStream=new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream objectInputStream=new ObjectInputStream(socket.getInputStream());
+                outputStream.writeObject(declareDangerReqs[0]);
+                outputStream.flush();
+                Boolean b = (Boolean) objectInputStream.readObject();
+                socket.close();
+                outputStream.close();
+                objectInputStream.close();
+                return b;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        @Override
+        protected void onPostExecute(Boolean bol) {
+            if(bol!=null)
+            {
+                context.Done(bol);
+            }
+            else context.Done(false);
         }
     }
 
