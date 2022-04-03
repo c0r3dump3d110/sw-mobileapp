@@ -18,6 +18,7 @@
         <activity
             android:name="com.fstm.coredumped.smartwalkabilty.android.DeclareDangerActivity"
             android:exported="false" />
+       <activity
             android:name="com.fstm.coredumped.smartwalkabilty.android.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
