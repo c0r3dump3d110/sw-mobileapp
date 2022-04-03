@@ -38,6 +38,13 @@ public class SettingsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        loadSet_Settings(UserInfos.getInstance().getMyContext());
+    }
+
     public static void loadSet_Settings(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         List<Integer> listCategories = null;
