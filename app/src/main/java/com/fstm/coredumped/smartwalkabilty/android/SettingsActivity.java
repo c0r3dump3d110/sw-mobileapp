@@ -68,10 +68,10 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             Set<Categorie> categories = (Set<Categorie>) DAOCategorie.getDaoCategorie().Retrieve();
-            List<Integer> categorisIds = new ArrayList<>();
+            List<String> categorisIds = new ArrayList<>();
             List<String> categorisStrings = new ArrayList<>();
             for (Categorie categorie : categories){
-                categorisIds.add(categorie.getId());
+                categorisIds.add(String.valueOf(categorie.getId()));
                 categorisStrings.add(categorie.getCategorie());
             }
             CharSequence[] catids = categorisIds.toArray(new CharSequence[categorisIds.size()]);
