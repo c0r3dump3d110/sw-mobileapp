@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.fstm.coredumped.android.R;
 import com.fstm.coredumped.smartwalkabilty.android.deamon.AnnonceDeamon_noRouting;
+import com.fstm.coredumped.smartwalkabilty.android.deamon.VisualiserDeamon;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
         Connexion.ConstructDb(getApplicationContext());
         UserInfos.initUserInfosObject(getApplicationContext());
         new AnnonceDeamon_noRouting().start();
+        new VisualiserDeamon(this.map, getApplicationContext()).start();
     }
     private void goToMyLocation()
     {
