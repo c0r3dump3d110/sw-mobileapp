@@ -51,7 +51,7 @@ public class RoutingHelper extends Thread{
     }
     public void VisualiseChemin(Chemin chemin)
     {
-        if(chemin.getPriority()==1 || chemin.getPriority()==-1)
+        if(UserInfos.getInstance().getPathsToShow().contains(chemin.getPriority()))
             for (Vertex v: chemin.getVertices()) {
                 List<org.osmdroid.util.GeoPoint> list=new ArrayList<>();
                 list.add(GeoMethods.turnGEOOSM(v.getArrive()));
@@ -59,8 +59,7 @@ public class RoutingHelper extends Thread{
                 if(v.getDepart().equals(pointD))currentVertex=v;
                 Polyline line = new Polyline();
                 line.setPoints(list);
-                if(chemin.getPriority()==1) { line.getOutlinePaint().setColor(Color.BLUE);}
-                else line.getOutlinePaint().setColor(Color.GREEN);
+                line.getOutlinePaint().setColor(UserInfos.getInstance().getPathsColors().get(chemin.getPriority()));
                 line.setGeodesic(true);
                 line.setVisible(true);
                 if(!polylineMap.containsKey(v)) polylineMap.put(v,new HashSet<>());
@@ -68,7 +67,6 @@ public class RoutingHelper extends Thread{
                 overlay.getMapView().getOverlays().add(line);
                 overlay.getMapView().invalidate();
             }
-
     }
     public void RoutingProcess()
     {

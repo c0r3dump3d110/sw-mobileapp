@@ -6,6 +6,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,14 +20,15 @@ import com.fstm.coredumped.smartwalkabilty.android.SettingsActivity;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserInfos {
     public static final int SAFEST_PATH =-1;
     public static final int SHORTEST_PATH =1;
-    public static final int ALT_SHORTEST_PATH_1 =2;
-    public static final int ALT_SHORTEST_PATH_2 =3;
-
+    public static final int ALT_SHORTEST_PATH_1=2;
+    public static final int ALT_SHORTEST_PATH_2=3;
     private Context myContext;
     private static UserInfos userInfos;
     private double radius=15;
@@ -34,8 +36,40 @@ public class UserInfos {
     private Location curentlocation;
     private List<Integer> cats=new ArrayList<>();
     private List<Integer> pathsToShow =new ArrayList<>();
+    private Map<Integer, Integer> pathsColors =new HashMap<Integer, Integer>();
     public List<Integer> getCats() {
         return cats;
+    }
+
+    public static UserInfos getInstance()
+    {
+        return userInfos;
+    }
+
+    private UserInfos(Context myContext) {
+        this.myContext = myContext;
+        cats.add(1);
+        cats.add(2);
+    }
+    public static void initUserInfosObject(Context context)
+    {
+       userInfos=new UserInfos(context);
+       userInfos.DemandLocationOnGPS();
+       SettingsActivity.loadSet_Settings(context);
+       userInfos.pathsToShow.add(SAFEST_PATH);
+       userInfos.pathsToShow.add(SHORTEST_PATH);
+       userInfos.pathsColors.put(SAFEST_PATH,Color.GREEN);
+       userInfos.pathsColors.put(SHORTEST_PATH,Color.BLUE);
+       userInfos.pathsColors.put(ALT_SHORTEST_PATH_1,Color.YELLOW);
+       userInfos.pathsColors.put(ALT_SHORTEST_PATH_2,Color.GRAY);
+    }
+
+    public Map<Integer, Integer> getPathsColors() {
+        return pathsColors;
+    }
+
+    public void setPathsColors(Map<Integer, Integer> pathsColors) {
+        this.pathsColors = pathsColors;
     }
 
     public Context getMyContext() {
@@ -74,24 +108,6 @@ public class UserInfos {
         this.radius = radius;
     }
 
-    private UserInfos(Context myContext) {
-        this.myContext = myContext;
-        cats.add(1);
-        cats.add(2);
-    }
-
-    public static void initUserInfosObject(Context context)
-    {
-       userInfos=new UserInfos(context);
-       userInfos.DemandLocationOnGPS();
-       SettingsActivity.loadSet_Settings(context);
-       userInfos.pathsToShow.add(SAFEST_PATH);
-       userInfos.pathsToShow.add(SHORTEST_PATH);
-    }
-    public static UserInfos getInstance()
-    {
-        return userInfos;
-    }
     public GeoPoint getCurrentLocation() {
         if(curentlocation!=null)return new GeoPoint(curentlocation.getLatitude(),curentlocation.getLongitude());
         try {
