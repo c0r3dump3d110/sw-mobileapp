@@ -15,6 +15,9 @@ import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOSite;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -79,12 +82,22 @@ public class RoutingHelper extends Thread{
         overlay.setHelper(this);
         if(chemins!=null){
             Connexion.getCon().ClearDB();
+            Collections.sort(chemins,new cmp());
             for (Chemin c : chemins) {
                 VisualiseChemin(c);
                 for (Site a: c.getSites()) {
                     DAOSite.getDaoSite().Create(a);
                 }
             }
+        }
+    }
+    class cmp implements Comparator<Chemin>{
+
+        @Override
+        public int compare(Chemin chemin, Chemin t1) {
+            if(chemin.getPriority()<t1.getPriority())return 1;
+            if(chemin.getPriority()>t1.getPriority())return -1;
+            return 0;
         }
     }
     public void stopMe()
