@@ -130,9 +130,11 @@ public class RoutingHelper extends Thread{
                     stopMe();
                 }else{
                     Vertex v=calculateVertexCurrent();
+                    if(v!=null){
                     if(v.equals(currentVertex))continue;
                     removePolyline(currentVertex);
                     currentVertex=v;
+                    }
                 }
             } catch (InterruptedException e) {
                return;

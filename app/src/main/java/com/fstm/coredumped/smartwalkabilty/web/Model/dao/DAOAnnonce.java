@@ -8,7 +8,6 @@ import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Annonce;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Image;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
 import static com.fstm.coredumped.smartwalkabilty.web.Model.dao.AnnounceTable.*;
-import static com.fstm.coredumped.smartwalkabilty.web.Model.dao.SiteTable.TableName;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -61,6 +60,7 @@ public class DAOAnnonce implements IDAO<Annonce>{
 
 
     private void fillStatement(Annonce obj, ContentValues preparedStatement)  {
+        preparedStatement.put(id,obj.getId());
         preparedStatement.put(dateD, obj.getDateDebut().toString());
         preparedStatement.put(dateF, obj.getDateFin().toString());
         preparedStatement.put(titre,obj.getTitre());
@@ -96,12 +96,12 @@ public class DAOAnnonce implements IDAO<Annonce>{
     private Annonce extractAnnonce(Cursor set) throws SQLException {
         Annonce annonce=new Annonce();
         annonce.setId(set.getInt(0));
-        annonce.setDescription(set.getString(1));
-        annonce.setUrlPrincipalImage(set.getString(2));
+        annonce.setDescription(set.getString(4));
+        annonce.setUrlPrincipalImage(set.getString(5));
         annonce.setTitre(set.getString(3));
-        String dated=set.getString(4);
-        String datef=set.getString(5);
-        SimpleDateFormat dateFormat=new SimpleDateFormat("dow mon dd hh:mm:ss zzz yyyy");
+        String dated=set.getString(1);
+        String datef=set.getString(2);
+        SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
         try {
             annonce.setDateDebut(dateFormat.parse(dated));
             annonce.setDateFin(dateFormat.parse(datef));
@@ -113,11 +113,11 @@ public class DAOAnnonce implements IDAO<Annonce>{
     }
     public void extractSiteAnnonces(Site site)
     {
-        SQLiteDatabase database=Connexion.getCon().getWritableDatabase();
+        SQLiteDatabase database=Connexion.getCon().getReadableDatabase();
         database.beginTransaction();
         try {
-            Cursor set =database.rawQuery("SELECT a.* FROM "+TableName+" a JOIN "+A_S_Table.TableName+" acs on a."+id+" = acs."+A_S_Table.Announce+"  where id_site=?",new String[]{String.valueOf(site.getId())}) ;
-            while (set.moveToNext()){
+            Cursor set =database.rawQuery("SELECT a.* FROM "+TableName+" as a , "+A_S_Table.TableName+" as acs  where a."+id+"=acs."+A_S_Table.Announce+" and "+A_S_Table.Site+"=?",new String[]{String.valueOf(site.getId())}) ;
+                while (set.moveToNext()){
                 site.AddAnnonce(extractAnnonce(set));
             }
             database.setTransactionSuccessful();
