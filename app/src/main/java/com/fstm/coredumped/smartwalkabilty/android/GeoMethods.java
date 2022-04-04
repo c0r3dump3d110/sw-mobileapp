@@ -27,8 +27,12 @@ public interface GeoMethods {
         return Double.parseDouble(str);
     }
     static double distanceToCenterOfVertex(Vertex v, com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint loc){
+        return loc.distanceToInMeters(CenterOfVertex(v));
+    }
+    static com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint CenterOfVertex(Vertex v){
         double Ycenter = (v.getDepart().getLaltittude() + v.getArrive().getLaltittude())/2.0;
         double Xcenter = (v.getDepart().getLongtitude() + v.getArrive().getLongtitude())/2.0;
-        return loc.distanceToInMeters(new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(Ycenter,Xcenter));
+        return new com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint(Ycenter,Xcenter);
     }
+
 }

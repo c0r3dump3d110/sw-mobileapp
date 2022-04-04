@@ -2,14 +2,17 @@ package com.fstm.coredumped.smartwalkabilty.android;
 
 import android.os.AsyncTask;
 
+import com.fstm.coredumped.smartwalkabilty.android.deamon.DangerDaemon;
 import com.fstm.coredumped.smartwalkabilty.android.deamon.RoutingHelper;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
+import com.fstm.coredumped.smartwalkabilty.common.controller.DangerReq;
 import com.fstm.coredumped.smartwalkabilty.common.controller.DeclareDangerReq;
 import com.fstm.coredumped.smartwalkabilty.common.controller.RequestPerimetreAnnonce;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathWithAnnounces;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Danger;
+import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Declaration;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
@@ -55,10 +58,15 @@ public class ClientSocket
         RequestPerimetreAnnonce perimetreReq=new RequestPerimetreAnnonce(UserInfos.getInstance().getRadius(),point,UserInfos.getInstance().getCats());
         new PerimetreTask().execute(perimetreReq);
     }
+    public void SendDangerReq()
+    {
+        DangerReq dangerReq=new DangerReq(UserInfos.getInstance().getRadiusDanger(),UserInfos.getInstance().getCurrentLocation());
+        new DangerTask().execute(dangerReq);
+    }
     public void SendDeclareDangerReq(DeclareDangerActivity context, Danger danger)
     {
         DeclareDangerReq declareDangerReq=new DeclareDangerReq(danger,UserInfos.getInstance().getCurrentLocation());
-        new DangerTask(context).execute(declareDangerReq);
+        new DeclareDangerTask(context).execute(declareDangerReq);
     }
 
     class RoutingTask extends AsyncTask<ShortestPathReq,Void, List<Chemin>>{
@@ -158,10 +166,37 @@ public class ClientSocket
             }
         }
     }
-    class DangerTask extends AsyncTask<DeclareDangerReq,Void, Boolean>{
+    class DangerTask extends AsyncTask<DangerReq,Void, List<Declaration>>{
+        @Override
+        protected List<Declaration> doInBackground(DangerReq... perimetreReqs) {
+            try {
+                Socket socket=ConnectToServer();
+                ObjectOutputStream outputStream=new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream objectInputStream=new ObjectInputStream(socket.getInputStream());
+                outputStream.writeObject(perimetreReqs[0]);
+                outputStream.flush();
+                List<Declaration> declarations= (List<Declaration>) objectInputStream.readObject();
+                socket.close();
+                outputStream.close();
+                objectInputStream.close();
+                return declarations;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        @Override
+        protected void onPostExecute(List<Declaration> declarations) {
+            if(declarations!=null)
+            {
+                DangerDaemon.GetDangerDeamon().showDeclarations(declarations);
+            }
+        }
+    }
+    class DeclareDangerTask extends AsyncTask<DeclareDangerReq,Void, Boolean>{
         DeclareDangerActivity context;
 
-        public DangerTask(DeclareDangerActivity context) {
+        public DeclareDangerTask(DeclareDangerActivity context) {
             this.context = context;
         }
 

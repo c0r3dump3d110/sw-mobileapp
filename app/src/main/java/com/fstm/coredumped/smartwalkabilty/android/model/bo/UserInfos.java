@@ -33,6 +33,7 @@ public class UserInfos {
     private Context myContext;
     private static UserInfos userInfos;
     private double radius = 15;
+    private double radiusDanger = 100;
     private boolean routing = false;
     private Location curentlocation;
     private List<Integer> cats = new ArrayList<>();
@@ -71,6 +72,14 @@ public class UserInfos {
 
     public void setPathsColors(Map<Integer, Integer> pathsColors) {
         this.pathsColors = pathsColors;
+    }
+
+    public double getRadiusDanger() {
+        return radiusDanger;
+    }
+
+    public void setRadiusDanger(double radiusDanger) {
+        this.radiusDanger = radiusDanger;
     }
 
     public Context getMyContext() {

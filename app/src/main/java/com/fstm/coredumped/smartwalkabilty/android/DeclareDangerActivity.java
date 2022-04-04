@@ -25,8 +25,7 @@ public class DeclareDangerActivity extends AppCompatActivity {
     private static final String Medium="Medium";
     private static final String High="High";
     private static final String VeryHigh="Very High";
-
-    Map<String,Integer> degrees=new HashMap<>();
+    ClientSocket socket=new ClientSocket();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +42,6 @@ public class DeclareDangerActivity extends AppCompatActivity {
         testArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(testArrayAdapter);
         //Degrees
-        degrees.put(VeryLow,1);
-        degrees.put(low,2);
-        degrees.put(Medium,3);
-        degrees.put(High,4);
-        degrees.put(VeryHigh,5);
         List<String> strings=new ArrayList<>();
         strings.add(VeryLow);
         strings.add(low);
@@ -64,9 +58,9 @@ public class DeclareDangerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Danger danger=(Danger)(spinner.getSelectedItem());
-                int degree=degrees.get(degreeSpinner.getSelectedItem().toString());
+                int degree=GetDegree(degreeSpinner.getSelectedItem().toString());
                 danger.setDegree(degree);
-                new ClientSocket().SendDeclareDangerReq(DeclareDangerActivity.this,danger);
+                socket.SendDeclareDangerReq(DeclareDangerActivity.this,danger);
             }
         });
         findViewById(R.id.cancel_button).setOnClickListener(new View.OnClickListener() {
@@ -83,5 +77,15 @@ public class DeclareDangerActivity extends AppCompatActivity {
             Toast.makeText(DeclareDangerActivity.this,"Thank you for your contribution but your request was not valid",Toast.LENGTH_LONG).show();
         }
         finish();
+    }
+    private int GetDegree(String d){
+        switch (d){
+            case VeryLow : return 1;
+            case low:  return 2;
+            case Medium : return  3;
+            case High : return 4;
+            case VeryHigh : return 5;
+            default: return 0;
+        }
     }
 }
