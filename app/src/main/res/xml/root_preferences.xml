@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Chemins">
 
@@ -27,6 +28,8 @@
     <PreferenceCategory
         app:title="Perimetre Geofencing">
         <SeekBarPreference
+            android:max="500"
+            app:min="10"
             app:key="radius"
             app:title="Perimetre"
             app:showSeekBarValue="true"
