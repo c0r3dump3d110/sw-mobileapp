@@ -48,6 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static void loadSet_Settings(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         List<Integer> listCategories = null;
+        List<Integer> listeChemins = null;
         boolean useCategories = sp.getBoolean("useCategories",false);
         if (useCategories) {
             Set<String> categories = sp.getStringSet("categories",null);
@@ -58,12 +59,29 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         }
+        Set<String> chemins = sp.getStringSet("chemins",null);
+        if (chemins != null){
+            listeChemins = new ArrayList<Integer>();
+            for (String chemin : chemins){
+                listeChemins.add(Integer.parseInt(chemin));
+            }
+        }
 
         int radius = sp.getInt("radius",30);
 
         UserInfos.getInstance().setRadius(radius);
-        if (useCategories){
+        if (useCategories && listCategories != null){
             UserInfos.getInstance().setCats(listCategories);
+        }
+        else{
+            UserInfos.getInstance().setCats(new ArrayList<>());
+        }
+
+        if (listeChemins != null){
+            UserInfos.getInstance().setPathsToShow(listeChemins);
+        }
+        else{
+            UserInfos.getInstance().setPathsToShow(new ArrayList<>());
         }
 
 

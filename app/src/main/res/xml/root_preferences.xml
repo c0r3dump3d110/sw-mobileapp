@@ -1,14 +1,12 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Calcul d'itiniraire">
+    <PreferenceCategory app:title="Chemins">
 
-        <ListPreference
-            app:defaultValue="1"
+        <MultiSelectListPreference
             app:entries="@array/itiniraire_entries"
             app:entryValues="@array/itiniraire_values"
-            app:key="itiniraire"
-            app:title="Mode de calcul d'itiniraire"
-            app:useSimpleSummaryProvider="true" />
+            app:key="chemins"
+            app:title="Chemins a afficher" />
 
     </PreferenceCategory>
 
