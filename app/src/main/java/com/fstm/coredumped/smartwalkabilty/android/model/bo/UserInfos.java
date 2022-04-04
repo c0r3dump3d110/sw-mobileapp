@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.fstm.coredumped.smartwalkabilty.android.MainActivity;
 import com.fstm.coredumped.smartwalkabilty.android.SettingsActivity;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 
@@ -25,24 +26,24 @@ import java.util.List;
 import java.util.Map;
 
 public class UserInfos {
-    public static final int SAFEST_PATH =-1;
-    public static final int SHORTEST_PATH =1;
-    public static final int ALT_SHORTEST_PATH_1=2;
-    public static final int ALT_SHORTEST_PATH_2=3;
+    public static final int SAFEST_PATH = -1;
+    public static final int SHORTEST_PATH = 1;
+    public static final int ALT_SHORTEST_PATH_1 = 2;
+    public static final int ALT_SHORTEST_PATH_2 = 3;
     private Context myContext;
     private static UserInfos userInfos;
-    private double radius=15;
-    private boolean routing=false;
+    private double radius = 15;
+    private boolean routing = false;
     private Location curentlocation;
-    private List<Integer> cats=new ArrayList<>();
-    private List<Integer> pathsToShow =new ArrayList<>();
-    private Map<Integer, Integer> pathsColors =new HashMap<Integer, Integer>();
+    private List<Integer> cats = new ArrayList<>();
+    private List<Integer> pathsToShow = new ArrayList<>();
+    private Map<Integer, Integer> pathsColors = new HashMap<Integer, Integer>();
+
     public List<Integer> getCats() {
         return cats;
     }
 
-    public static UserInfos getInstance()
-    {
+    public static UserInfos getInstance() {
         return userInfos;
     }
 
@@ -51,17 +52,17 @@ public class UserInfos {
         cats.add(1);
         cats.add(2);
     }
-    public static void initUserInfosObject(Context context)
-    {
-       userInfos=new UserInfos(context);
-       userInfos.DemandLocationOnGPS();
-       SettingsActivity.loadSet_Settings(context);
-       userInfos.pathsToShow.add(SAFEST_PATH);
-       userInfos.pathsToShow.add(SHORTEST_PATH);
-       userInfos.pathsColors.put(SAFEST_PATH,Color.GREEN);
-       userInfos.pathsColors.put(SHORTEST_PATH,Color.BLUE);
-       userInfos.pathsColors.put(ALT_SHORTEST_PATH_1,Color.YELLOW);
-       userInfos.pathsColors.put(ALT_SHORTEST_PATH_2,Color.GRAY);
+
+    public static void initUserInfosObject(Context context) {
+        userInfos = new UserInfos(context);
+        userInfos.DemandLocationOnGPS();
+        SettingsActivity.loadSet_Settings(context);
+        userInfos.pathsToShow.add(SAFEST_PATH);
+        userInfos.pathsToShow.add(SHORTEST_PATH);
+        userInfos.pathsColors.put(SAFEST_PATH, Color.GREEN);
+        userInfos.pathsColors.put(SHORTEST_PATH, Color.BLUE);
+        userInfos.pathsColors.put(ALT_SHORTEST_PATH_1, Color.YELLOW);
+        userInfos.pathsColors.put(ALT_SHORTEST_PATH_2, Color.GRAY);
     }
 
     public Map<Integer, Integer> getPathsColors() {
@@ -109,7 +110,8 @@ public class UserInfos {
     }
 
     public GeoPoint getCurrentLocation() {
-        if(curentlocation!=null)return new GeoPoint(curentlocation.getLatitude(),curentlocation.getLongitude());
+        if (curentlocation != null)
+            return new GeoPoint(curentlocation.getLatitude(), curentlocation.getLongitude());
         try {
             LocationManager locationManager = (LocationManager) myContext.getSystemService(LOCATION_SERVICE);
             if (ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -117,12 +119,13 @@ public class UserInfos {
                 return new GeoPoint();
             }
             Location location = getLastKnownLocation(locationManager);
-            return new GeoPoint(location.getLatitude(),location.getLongitude());
-        }catch (Exception e){
+            return new GeoPoint(location.getLatitude(), location.getLongitude());
+        } catch (Exception e) {
             e.printStackTrace();
             return new GeoPoint();
         }
     }
+
     private static Location getLastKnownLocation(LocationManager mLocationManager) {
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
@@ -137,10 +140,16 @@ public class UserInfos {
         }
         return bestLocation;
     }
-    @SuppressLint("MissingPermission")
-    private void DemandLocationOnGPS()
-    {
-        locatlist loc=new locatlist();
+
+    public void DemandLocationOnGPS() {
+        if (ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ((MainActivity)myContext).requestPermissionsIfNecessary(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+            },50);
+            return;
+        }
+        locatlist loc = new locatlist();
         LocationManager locationManager = (LocationManager) myContext.getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, loc);
     }

@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     private RoutingOverlay routingOverlay;
+    boolean canLocate=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,10 +126,15 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(
                     this,
                     permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                    requestCode);
+        }else{
+            if(requestCode==50)UserInfos.getInstance().DemandLocationOnGPS();
         }
     }
-    private void requestPermissionsIfNecessary(String[] permissions) {
+    public void requestPermissionsIfNecessary(String[] permissions) {
+       requestPermissionsIfNecessary(permissions,REQUEST_PERMISSIONS_REQUEST_CODE);
+    }
+    public void requestPermissionsIfNecessary(String[] permissions,int code) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission)
@@ -141,13 +147,13 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(
                     this,
                     permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                    code);
         }
     }
     private void initALL(){
         routingOverlay= new RoutingOverlay(getApplicationContext());
         Connexion.ConstructDb(getApplicationContext());
-        UserInfos.initUserInfosObject(getApplicationContext());
+        UserInfos.initUserInfosObject(this);
         new AnnonceDeamon_noRouting().start();
         new VisualiserDeamon(this.map, getApplicationContext()).start();
     }
