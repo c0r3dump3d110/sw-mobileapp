@@ -101,6 +101,7 @@ public class RoutingHelper extends Thread{
     }
     public void stopMe()
     {
+        UserInfos.getInstance().getLier().init();
         justClear();
         running=false;
         UserInfos.getInstance().setRouting(false);
@@ -115,18 +116,22 @@ public class RoutingHelper extends Thread{
     @Override
     public void run()
     {
+        UserInfos.getInstance().getLier().init();
         if(running){
         System.out.println("I ran");
         UserInfos.getInstance().setRouting(true);
         RoutingProcess();
-        while (running){
+        UserInfos.getInstance().initLier();
+        UserInfos.getInstance().getLier().start();
+            while (running){
             try {
                 Thread.sleep(1000);
                 pointD=UserInfos.getInstance().getCurrentLocation();
                 overlay.getDepartMark().setVisible(false);
                 overlay.ReshowMarkerDep(GeoMethods.turnGEOOSM(pointD));
-                if(pointD.distanceToInMeters(pointA) <= 10){
+                if(pointD.distanceToInMeters(pointA) <= 100){
                     stopMe();
+                    break;
                 }else{
                     Vertex v=calculateVertexCurrent();
                     if(v!=null){
@@ -136,18 +141,22 @@ public class RoutingHelper extends Thread{
                     }
                 }
             } catch (InterruptedException e) {
-               return;
+                System.out.println("I stopped");
+                return;
             }
         }
         }
     }
 
     public void justClear() {
+        UserInfos.getInstance().getLier().init();
         for (Set<Polyline> v: polylineMap.values()) {
             for (Polyline po : v) {
                 overlay.getMapView().getOverlays().remove(po);
             }
         }
+        overlay.getDepartMark().setVisible(false);
+        overlay.getArriveMark().setVisible(false);
         UserInfos.getInstance().setRouting(false);
         overlay.getMapView().invalidate();
     }

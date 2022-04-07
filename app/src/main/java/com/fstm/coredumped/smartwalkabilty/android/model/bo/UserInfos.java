@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.fstm.coredumped.smartwalkabilty.android.MainActivity;
 import com.fstm.coredumped.smartwalkabilty.android.SettingsActivity;
+import com.fstm.coredumped.smartwalkabilty.android.deamon.Lier;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
 
 import java.util.ArrayList;
@@ -47,6 +48,16 @@ public class UserInfos {
     public static UserInfos getInstance() {
         return userInfos;
     }
+    //Temporary
+    private Lier lier=new Lier();
+
+    public Lier getLier() {
+        return lier;
+    }
+
+    public void setLier(Lier lier) {
+        this.lier = lier;
+    }
 
     private UserInfos(Context myContext) {
         this.myContext = myContext;
@@ -58,7 +69,6 @@ public class UserInfos {
         userInfos = new UserInfos(context);
         userInfos.DemandLocationOnGPS();
         SettingsActivity.loadSet_Settings(context);
-        userInfos.pathsToShow.add(SAFEST_PATH);
         userInfos.pathsToShow.add(SHORTEST_PATH);
         userInfos.pathsColors.put(SAFEST_PATH, Color.GREEN);
         userInfos.pathsColors.put(SHORTEST_PATH, Color.BLUE);
@@ -119,6 +129,7 @@ public class UserInfos {
     }
 
     public GeoPoint getCurrentLocation() {
+        if(lier!=null)return lier.GetLocation();
         if (curentlocation != null)
             return new GeoPoint(curentlocation.getLatitude(), curentlocation.getLongitude());
         try {
@@ -162,6 +173,11 @@ public class UserInfos {
         LocationManager locationManager = (LocationManager) myContext.getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, loc);
     }
+
+    public void initLier() {
+        lier=new Lier();
+    }
+
     class locatlist implements LocationListener {
         final int HALF_MINUTE = 1000 * 30;
         @Override

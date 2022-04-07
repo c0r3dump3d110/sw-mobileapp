@@ -2,6 +2,7 @@ package com.fstm.coredumped.smartwalkabilty.android;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.fstm.coredumped.android.R;
@@ -203,8 +204,8 @@ public class RoutingOverlay extends Overlay
     }
     private void BeginRouting()
     {
-        System.out.println("Depart  Longitude: "+depart.getLongtitude()+" latitude : "+depart.getLaltittude());
-        System.out.println("Arriver  Longitude: "+Arrive.getLongtitude()+" latitude : "+Arrive.getLaltittude());
+        Log.i("Points", "Depart  Longitude: "+depart.getLongtitude()+" latitude : "+depart.getLaltittude());
+        Log.i("Points", "Arriver  Longitude: "+Arrive.getLongtitude()+" latitude : "+Arrive.getLaltittude());
         pContext.startSpinner();
         new ClientSocket().SendRoutingReq(this,depart,Arrive);
     }
