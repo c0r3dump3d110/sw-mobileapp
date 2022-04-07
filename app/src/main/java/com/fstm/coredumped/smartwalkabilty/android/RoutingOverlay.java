@@ -20,7 +20,7 @@ public class RoutingOverlay extends Overlay
     public static final int METHOD_ONE_POINTS=1;
     private com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint depart,Arrive;
     private Marker DepartMark,ArriveMark;
-    private MainActivity pContext;
+    private final MainActivity pContext;
     private MapView mapView ;
     private int method =METHOD_ONE_POINTS;
 
@@ -65,6 +65,8 @@ public class RoutingOverlay extends Overlay
             Arrive=null;
             if(DepartMark!=null) DepartMark.setVisible(false);
             if(ArriveMark!=null) ArriveMark.setVisible(false);
+            getpContext().stopSpinner();
+
             if(helper!=null){
                 helper.stopMe();
                 helper=null;

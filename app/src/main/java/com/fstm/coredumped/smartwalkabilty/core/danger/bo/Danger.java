@@ -1,9 +1,10 @@
 package com.fstm.coredumped.smartwalkabilty.core.danger.bo;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class Danger
+public abstract class Danger implements Serializable
 {
     protected int id;
     protected int degree;

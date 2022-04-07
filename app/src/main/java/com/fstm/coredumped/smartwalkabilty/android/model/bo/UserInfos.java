@@ -33,7 +33,7 @@ public class UserInfos {
     private Context myContext;
     private static UserInfos userInfos;
     private double radius = 15;
-    private double radiusDanger = 100;
+    private double radiusDanger = 500;
     private boolean routing = false;
     private Location curentlocation;
     private List<Integer> cats = new ArrayList<>();

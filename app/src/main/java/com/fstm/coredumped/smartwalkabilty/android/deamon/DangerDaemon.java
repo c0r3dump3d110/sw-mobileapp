@@ -77,6 +77,7 @@ public class DangerDaemon extends Thread
             marker.setPosition(turnGEOOSM(CenterOfVertex(d.getVertex())));
             marker.setVisible(true);
             marker.setTitle(d.getDanger().toString()+"\n Degree : "+GetDegree(d.getDanger().getDegree()));
+            mapView.getOverlays().add(marker);
             declarationMarkerMap.put(d.getVertex(),marker);
         }
     }
