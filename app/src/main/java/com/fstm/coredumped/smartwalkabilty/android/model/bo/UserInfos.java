@@ -58,7 +58,6 @@ public class UserInfos {
         userInfos = new UserInfos(context);
         userInfos.DemandLocationOnGPS();
         SettingsActivity.loadSet_Settings(context);
-        userInfos.pathsToShow.add(SAFEST_PATH);
         userInfos.pathsToShow.add(SHORTEST_PATH);
         userInfos.pathsColors.put(SAFEST_PATH, Color.GREEN);
         userInfos.pathsColors.put(SHORTEST_PATH, Color.BLUE);

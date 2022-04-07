@@ -125,7 +125,7 @@ public class RoutingHelper extends Thread{
                 pointD=UserInfos.getInstance().getCurrentLocation();
                 overlay.getDepartMark().setVisible(false);
                 overlay.ReshowMarkerDep(GeoMethods.turnGEOOSM(pointD));
-                if(pointD.distanceToInMeters(pointA) <= 10){
+                if(pointD.distanceToInMeters(pointA) <= 25){
                     stopMe();
                 }else{
                     Vertex v=calculateVertexCurrent();
@@ -148,6 +148,8 @@ public class RoutingHelper extends Thread{
                 overlay.getMapView().getOverlays().remove(po);
             }
         }
+        overlay.getDepartMark().setVisible(false);
+        overlay.getArriveMark().setVisible(false);
         UserInfos.getInstance().setRouting(false);
         overlay.getMapView().invalidate();
     }

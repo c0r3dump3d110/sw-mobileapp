@@ -62,7 +62,7 @@ public class DangerDaemon extends Thread
             {
                 ClearDangers();
                 socket.SendDangerReq();
-                Thread.sleep(5000);
+                Thread.sleep(60000);
             }catch (InterruptedException exception)
             {
                 System.err.println(exception.toString());
