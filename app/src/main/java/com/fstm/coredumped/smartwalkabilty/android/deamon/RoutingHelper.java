@@ -82,7 +82,7 @@ public class RoutingHelper extends Thread{
         overlay.setHelper(this);
         if(chemins!=null){
             Connexion.getCon().ClearDB();
-            Collections.sort(chemins,new cmp());
+            Collections.sort(chemins, new cmp());
             for (Chemin c : chemins) {
                 VisualiseChemin(c);
                 for (Site a: c.getSites()) {
@@ -90,14 +90,13 @@ public class RoutingHelper extends Thread{
                 }
             }
         }
+        overlay.getpContext().stopSpinner();
     }
-    class cmp implements Comparator<Chemin>{
+    static class cmp implements Comparator<Chemin>{
 
         @Override
         public int compare(Chemin chemin, Chemin t1) {
-            if(chemin.getPriority()<t1.getPriority())return 1;
-            if(chemin.getPriority()>t1.getPriority())return -1;
-            return 0;
+            return Integer.compare(t1.getPriority(), chemin.getPriority());
         }
     }
     public void stopMe()

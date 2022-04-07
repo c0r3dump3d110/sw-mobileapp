@@ -89,14 +89,14 @@ public class DangerDaemon extends Thread
     {
         switch (danger.toString()){
                 case "Accident":
-                    if(danger.getDegree()<3)return AppCompatResources.getDrawable(context,R.drawable.Accident1);
-                    return AppCompatResources.getDrawable(context,R.drawable.Accident2);
+                    if(danger.getDegree()<3)return AppCompatResources.getDrawable(context,R.drawable.accident1);
+                    return AppCompatResources.getDrawable(context,R.drawable.accident2);
                 case "Vol":
-                    if(danger.getDegree()<3)return AppCompatResources.getDrawable(context, R.drawable.Vol1);
-                    return AppCompatResources.getDrawable(context,R.drawable.Vol2);
+                    if(danger.getDegree()<3)return AppCompatResources.getDrawable(context, R.drawable.vol1);
+                    return AppCompatResources.getDrawable(context,R.drawable.vol2);
                 case "Traveaux":
-                    if(danger.getDegree()<3)return AppCompatResources.getDrawable(context,R.drawable.Traveaux1);
-                    return AppCompatResources.getDrawable(context,R.drawable.Traveaux2);
+                    if(danger.getDegree()<3)return AppCompatResources.getDrawable(context,R.drawable.traveaux1);
+                    return AppCompatResources.getDrawable(context,R.drawable.traveaux2);
             default:
                 return AppCompatResources.getDrawable(context,R.drawable.warning);
         }

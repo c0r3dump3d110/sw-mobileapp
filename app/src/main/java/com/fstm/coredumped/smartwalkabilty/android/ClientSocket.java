@@ -70,9 +70,9 @@ public class ClientSocket
     }
 
     class RoutingTask extends AsyncTask<ShortestPathReq,Void, List<Chemin>>{
-        Overlay overlay;
+        RoutingOverlay overlay;
 
-        public RoutingTask(Overlay overlay) {
+        public RoutingTask(RoutingOverlay overlay) {
             this.overlay = overlay;
         }
 
@@ -96,6 +96,7 @@ public class ClientSocket
         }
         @Override
         protected void onPostExecute(List<Chemin> chemins) {
+            overlay.getpContext().stopSpinner();
             if(chemins!=null)
             {
                new RoutingHelper(chemins,(RoutingOverlay) overlay,false).RoutingProcess();
@@ -103,9 +104,9 @@ public class ClientSocket
         }
     }
     class RoutingAnnouncesTask extends AsyncTask<ShortestPathWithAnnounces,Void, List<Chemin>>{
-        Overlay overlay;
+        RoutingOverlay overlay;
 
-        public RoutingAnnouncesTask(Overlay overlay) {
+        public RoutingAnnouncesTask(RoutingOverlay overlay) {
             this.overlay = overlay;
         }
         @Override
@@ -128,9 +129,10 @@ public class ClientSocket
         }
         @Override
         protected void onPostExecute(List<Chemin> chemins) {
+          //  overlay.getpContext().stopSpinner();
             if(chemins!=null)
             {
-                new RoutingHelper(chemins,(RoutingOverlay)overlay).start();
+                new RoutingHelper(chemins,overlay).start();
             }
         }
     }

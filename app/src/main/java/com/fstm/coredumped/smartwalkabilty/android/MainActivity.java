@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.fstm.coredumped.android.R;
@@ -35,7 +36,17 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     private RoutingOverlay routingOverlay;
-    boolean canLocate=false;
+    private ProgressBar progressBar;
+
+
+    public void startSpinner() {
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.animate();
+    }
+    public void stopSpinner() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"You Choose the start and end Points now",Toast.LENGTH_LONG).show();
             }
         });
-
+        progressBar=findViewById(R.id.progressBar);
+        progressBar.animate();
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -152,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void initALL(){
-        routingOverlay= new RoutingOverlay(getApplicationContext());
+        routingOverlay= new RoutingOverlay(this);
         Connexion.ConstructDb(getApplicationContext());
         UserInfos.initUserInfosObject(this);
         new AnnonceDeamon_noRouting().start();

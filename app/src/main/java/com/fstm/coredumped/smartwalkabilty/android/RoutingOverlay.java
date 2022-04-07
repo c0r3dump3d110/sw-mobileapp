@@ -20,7 +20,7 @@ public class RoutingOverlay extends Overlay
     public static final int METHOD_ONE_POINTS=1;
     private com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint depart,Arrive;
     private Marker DepartMark,ArriveMark;
-    private Context pContext;
+    private MainActivity pContext;
     private MapView mapView ;
     private int method =METHOD_ONE_POINTS;
 
@@ -72,6 +72,10 @@ public class RoutingOverlay extends Overlay
         }
     }
 
+    public MainActivity getpContext() {
+        return pContext;
+    }
+
     public com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint getDepart() {
         return depart;
     }
@@ -92,7 +96,7 @@ public class RoutingOverlay extends Overlay
         return DepartMark;
     }
 
-    public RoutingOverlay(Context context){
+    public RoutingOverlay(MainActivity context){
         pContext=context;
     }
     @Override
@@ -199,6 +203,7 @@ public class RoutingOverlay extends Overlay
     {
         System.out.println("Depart  Longitude: "+depart.getLongtitude()+" latitude : "+depart.getLaltittude());
         System.out.println("Arriver  Longitude: "+Arrive.getLongtitude()+" latitude : "+Arrive.getLaltittude());
+        pContext.startSpinner();
         new ClientSocket().SendRoutingReq(this,depart,Arrive);
     }
 
