@@ -37,7 +37,7 @@ public class Lier extends Thread{
         try {
         for (i=0;i<geoPoints.size()-1;i++ )
         {
-            Thread.sleep(3000);
+            Thread.sleep(4000);
         }
         } catch (InterruptedException exception) {
             exception.printStackTrace();

@@ -50,7 +50,7 @@ public class VisualiserDeamon extends Thread{
                 Marker annonceSiteMarker = new Marker(this.mapView);
 
                 annonceSiteMarker.setPosition(new GeoPoint(GeoMethods.turnGEOOSM(site.getLocalisation())));
-                annonceSiteMarker.setIcon(context.getDrawable(R.drawable.sfppt_small));
+                annonceSiteMarker.setIcon(context.getDrawable(R.drawable.icons8advertisement));
                 mapView.getOverlays().add(annonceSiteMarker);
 
                 annonceSiteMarker.setTitle(annonce.getTitre());
@@ -90,7 +90,7 @@ public class VisualiserDeamon extends Thread{
                 this.drawNearestSites();
 
                 // test if previous
-                Thread.sleep(10000);
+                Thread.sleep(1000);
             }
         }catch (Exception e) {
             System.out.println("Exception in Deamon 2: "+e);
