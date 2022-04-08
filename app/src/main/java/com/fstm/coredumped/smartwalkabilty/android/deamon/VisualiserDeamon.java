@@ -50,7 +50,7 @@ public class VisualiserDeamon extends Thread{
                 Marker annonceSiteMarker = new Marker(this.mapView);
 
                 annonceSiteMarker.setPosition(new GeoPoint(GeoMethods.turnGEOOSM(site.getLocalisation())));
-                annonceSiteMarker.setIcon(context.getDrawable(R.drawable.sfppt_small));
+                annonceSiteMarker.setIcon(context.getDrawable(R.drawable.icons8advertisement64));
                 mapView.getOverlays().add(annonceSiteMarker);
 
                 annonceSiteMarker.setTitle(annonce.getTitre());
