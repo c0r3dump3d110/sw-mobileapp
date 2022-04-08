@@ -6,6 +6,7 @@ import com.fstm.coredumped.smartwalkabilty.android.GeoMethods;
 import com.fstm.coredumped.smartwalkabilty.android.RoutingOverlay;
 import com.fstm.coredumped.smartwalkabilty.android.model.bo.UserInfos;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Accident;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
