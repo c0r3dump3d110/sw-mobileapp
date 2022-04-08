@@ -9,15 +9,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.fstm.coredumped.android.R;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Accident;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Danger;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Traveaux;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Vol;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Accident;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Danger;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Traveaux;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Vol;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DeclareDangerActivity extends AppCompatActivity {
     private static final String VeryLow="Very Low";

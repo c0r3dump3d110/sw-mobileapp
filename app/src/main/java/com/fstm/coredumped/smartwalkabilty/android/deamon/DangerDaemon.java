@@ -8,8 +8,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.fstm.coredumped.android.R;
 import com.fstm.coredumped.smartwalkabilty.android.ClientSocket;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Danger;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Declaration;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Danger;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Declaration;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Vertex;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
