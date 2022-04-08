@@ -11,14 +11,12 @@ import com.fstm.coredumped.smartwalkabilty.common.controller.RequestPerimetreAnn
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathReq;
 import com.fstm.coredumped.smartwalkabilty.common.controller.ShortestPathWithAnnounces;
 import com.fstm.coredumped.smartwalkabilty.common.model.bo.GeoPoint;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Danger;
-import com.fstm.coredumped.smartwalkabilty.core.danger.bo.Declaration;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Danger;
+import com.fstm.coredumped.smartwalkabilty.core.danger.model.bo.Declaration;
 import com.fstm.coredumped.smartwalkabilty.core.routing.model.bo.Chemin;
 import com.fstm.coredumped.smartwalkabilty.web.Model.bo.Site;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.Connexion;
 import com.fstm.coredumped.smartwalkabilty.web.Model.dao.DAOSite;
-
-import org.osmdroid.views.overlay.Overlay;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

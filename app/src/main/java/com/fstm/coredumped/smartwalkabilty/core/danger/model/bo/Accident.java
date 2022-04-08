@@ -1,6 +1,4 @@
-package com.fstm.coredumped.smartwalkabilty.core.danger.bo;
-
-import androidx.annotation.NonNull;
+package com.fstm.coredumped.smartwalkabilty.core.danger.model.bo;
 
 public class Accident extends Danger
 {
