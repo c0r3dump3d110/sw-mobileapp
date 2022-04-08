@@ -210,7 +210,7 @@ public class ClientSocket
                 ObjectInputStream objectInputStream=new ObjectInputStream(socket.getInputStream());
                 outputStream.writeObject(declareDangerReqs[0]);
                 outputStream.flush();
-                Boolean b = (Boolean) objectInputStream.readObject();
+                Boolean b =  objectInputStream.readBoolean();
                 socket.close();
                 outputStream.close();
                 objectInputStream.close();
